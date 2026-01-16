@@ -17,18 +17,29 @@ const cdsGroups = [
   'Culture & Tourism', 'Legal Aid'
 ];
 
-export default function SignupPage() {
+const adminRoles = [
+  'PPA Owner',
+  'CDS Group Coordinator',
+  'Local Government Inspector',
+  'Zonal Inspector'
+];
+
+export default function AdminSignupPage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
-    stateCode: '',
-    servingState: '',
+    role: '',
+    state: '',
     localGovernment: '',
-    ppa: '',
+    zone: '',
     cdsGroup: '',
+    ppaName: '',
+    ppaAddress: '',
+    ppaEmail: '',
+    ppaPhone: '',
     password: '',
     confirmPassword: '',
     verificationCode: ''
@@ -42,14 +53,38 @@ export default function SignupPage() {
     setError('');
     
     if (step === 1) {
-      if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
+      if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.role) {
         setError('Please fill all required fields');
         return;
       }
     } else if (step === 2) {
-      if (!formData.stateCode || !formData.servingState || !formData.localGovernment || !formData.ppa || !formData.cdsGroup || !formData.password || !formData.confirmPassword) {
+      if (!formData.state || !formData.password || !formData.confirmPassword) {
         setError('Please fill all required fields');
         return;
+      }
+
+      if (formData.role === 'Local Government Inspector' || formData.role === 'PPA Owner' || formData.role === 'CDS Group Coordinator') {
+        if (!formData.localGovernment) {
+          setError('Local Government is required for your role');
+          return;
+        }
+      }
+
+      if (formData.role === 'Zonal Inspector' && !formData.zone) {
+        setError('Zone is required for Zonal Inspector');
+        return;
+      }
+
+      if (formData.role === 'CDS Group Coordinator' && !formData.cdsGroup) {
+        setError('Please select the CDS Group you will be coordinating');
+        return;
+      }
+
+      if (formData.role === 'PPA Owner') {
+        if (!formData.ppaName || !formData.ppaAddress) {
+          setError('PPA Name and Address are required for PPA Owners');
+          return;
+        }
       }
       
       if (formData.password !== formData.confirmPassword) {
@@ -88,13 +123,11 @@ export default function SignupPage() {
       }
       
       setTimeout(() => {
-        const userData = {
+        const adminData = {
           ...formData,
-          fullName: `${formData.firstName} ${formData.lastName}`
+          fullName: `${formData.firstName} ${formData.lastName}`,
+          adminId: `ADM-${Date.now()}`
         };
-        
-        localStorage.setItem('nysc_token', 'demo-token-12345');
-        localStorage.setItem('nysc_user', JSON.stringify(userData));
         
         setLoading(false);
         router.push('/login');
@@ -122,73 +155,78 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center py-8 px-4 bg-gray-50 font-playfair relative overflow-hidden">
-      <div className="absolute inset-0 z-0 opacity-10">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center py-8 px-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 font-playfair relative overflow-hidden">
+      <div className="absolute inset-0 z-0 opacity-5">
         <div 
           className="w-full h-full bg-center bg-no-repeat bg-contain"
           style={{ backgroundImage: "url('/images/nysc-logo.png')" }}
         ></div>
       </div>
+
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-[#008753] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse delay-700"></div>
+      </div>
       
       <Link 
         href="/" 
-        className="absolute top-6 left-6 z-20 text-3xl text-[#008753] hover:text-[#006b42] transition"
+        className="absolute top-6 left-6 z-20 text-3xl text-white hover:text-gray-300 transition"
       >
         &lt;
       </Link>
       
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
           <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#008753] rounded-full animate-spin"></div>
         </div>
       )}
       
       <div className="relative z-10 w-full max-w-4xl">
         <div className="mb-10 text-center">
-          <h1 className="text-5xl font-bold text-[#008753] mb-4">CDS Attendance Portal</h1>
-          <p className="text-gray-600 text-2xl">Register to start tracking your attendance</p>
+          <h1 className="text-5xl font-bold text-white mb-4">Administrator Registration</h1>
+          <p className="text-gray-300 text-2xl">Register as a CDS system administrator</p>
         </div>
         
         <div className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <div className="flex-1">
-              <div className="h-3 bg-gray-200 rounded-full">
+              <div className="h-3 bg-white/20 rounded-full">
                 <div 
                   className="h-3 bg-[#008753] rounded-full transition-all duration-300"
                   style={{ width: `${(step / 3) * 100}%` }}
                 ></div>
               </div>
             </div>
-            <div className="ml-6 text-xl font-semibold text-gray-700">
+            <div className="ml-6 text-xl font-semibold text-white">
               Step {step} of 3
             </div>
           </div>
           
           <div className="flex justify-between">
             <div className="text-center">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold ${step >= 1 ? 'bg-[#008753] text-white' : 'bg-gray-200 text-gray-500'}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold ${step >= 1 ? 'bg-[#008753] text-white' : 'bg-white/20 text-gray-400'}`}>
                 1
               </div>
-              <div className="mt-2 text-lg font-medium">Basic Info</div>
+              <div className="mt-2 text-lg font-medium text-white">Basic Info</div>
             </div>
             <div className="text-center">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold ${step >= 2 ? 'bg-[#008753] text-white' : 'bg-gray-200 text-gray-500'}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold ${step >= 2 ? 'bg-[#008753] text-white' : 'bg-white/20 text-gray-400'}`}>
                 2
               </div>
-              <div className="mt-2 text-lg font-medium">NYSC Details</div>
+              <div className="mt-2 text-lg font-medium text-white">Role Details</div>
             </div>
             <div className="text-center">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold ${step >= 3 ? 'bg-[#008753] text-white' : 'bg-gray-200 text-gray-500'}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold ${step >= 3 ? 'bg-[#008753] text-white' : 'bg-white/20 text-gray-400'}`}>
                 3
               </div>
-              <div className="mt-2 text-lg font-medium">Verification</div>
+              <div className="mt-2 text-lg font-medium text-white">Verification</div>
             </div>
           </div>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-10">
+        <div className="space-y-10">
           {error && (
-            <div className="bg-red-50 text-red-600 p-5 rounded-xl text-lg">
+            <div className="bg-red-500/20 border-2 border-red-500 text-red-200 p-5 rounded-xl text-lg">
               {error}
             </div>
           )}
@@ -197,7 +235,7 @@ export default function SignupPage() {
             <div className="space-y-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div>
-                  <label className="block text-2xl font-semibold text-gray-800 mb-4">
+                  <label className="block text-2xl font-semibold text-white mb-4">
                     First Name *
                   </label>
                   <input
@@ -205,13 +243,13 @@ export default function SignupPage() {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                    className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
                     placeholder="Enter first name"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-2xl font-semibold text-gray-800 mb-4">
+                  <label className="block text-2xl font-semibold text-white mb-4">
                     Last Name *
                   </label>
                   <input
@@ -219,7 +257,7 @@ export default function SignupPage() {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                    className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
                     placeholder="Enter last name"
                     required
                   />
@@ -227,7 +265,7 @@ export default function SignupPage() {
               </div>
               
               <div>
-                <label className="block text-2xl font-semibold text-gray-800 mb-4">
+                <label className="block text-2xl font-semibold text-white mb-4">
                   Email Address *
                 </label>
                 <input
@@ -235,14 +273,14 @@ export default function SignupPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                  className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
                   placeholder="Enter email address"
                   required
                 />
               </div>
               
               <div>
-                <label className="block text-2xl font-semibold text-gray-800 mb-4">
+                <label className="block text-2xl font-semibold text-white mb-4">
                   Phone Number *
                 </label>
                 <input
@@ -250,10 +288,28 @@ export default function SignupPage() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                  className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
                   placeholder="Enter phone number"
                   required
                 />
+              </div>
+
+              <div>
+                <label className="block text-2xl font-semibold text-white mb-4">
+                  Administrative Role *
+                </label>
+                <select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                  required
+                >
+                  <option value="" className="bg-slate-800">Select Role</option>
+                  {adminRoles.map(role => (
+                    <option key={role} value={role} className="bg-slate-800">{role}</option>
+                  ))}
+                </select>
               </div>
             </div>
           )}
@@ -261,40 +317,26 @@ export default function SignupPage() {
           {step === 2 && (
             <div className="space-y-10">
               <div>
-                <label className="block text-2xl font-semibold text-gray-800 mb-4">
-                  State Code *
+                <label className="block text-2xl font-semibold text-white mb-4">
+                  State *
                 </label>
-                <input
-                  type="text"
-                  name="stateCode"
-                  value={formData.stateCode}
+                <select
+                  name="state"
+                  value={formData.state}
                   onChange={handleChange}
-                  className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
-                  placeholder="Enter your state code"
+                  className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
                   required
-                />
+                >
+                  <option value="" className="bg-slate-800">Select State</option>
+                  {nigerianStates.map(state => (
+                    <option key={state} value={state} className="bg-slate-800">{state}</option>
+                  ))}
+                </select>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+              {(formData.role === 'Local Government Inspector' || formData.role === 'PPA Owner' || formData.role === 'CDS Group Coordinator') && (
                 <div>
-                  <label className="block text-2xl font-semibold text-gray-800 mb-4">
-                    Serving State *
-                  </label>
-                  <select
-                    name="servingState"
-                    value={formData.servingState}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent bg-white"
-                    required
-                  >
-                    <option value="">Select State</option>
-                    {nigerianStates.map(state => (
-                      <option key={state} value={state}>{state}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-2xl font-semibold text-gray-800 mb-4">
+                  <label className="block text-2xl font-semibold text-white mb-4">
                     Local Government *
                   </label>
                   <input
@@ -302,49 +344,116 @@ export default function SignupPage() {
                     name="localGovernment"
                     value={formData.localGovernment}
                     onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
-                    placeholder="Enter LGA"
+                    className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                    placeholder="Enter Local Government"
                     required
                   />
                 </div>
-              </div>
-              
-              <div>
-                <label className="block text-2xl font-semibold text-gray-800 mb-4">
-                  Place of Primary Assignment (PPA) *
-                </label>
-                <input
-                  type="text"
-                  name="ppa"
-                  value={formData.ppa}
-                  onChange={handleChange}
-                  className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
-                  placeholder="Enter your PPA"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-2xl font-semibold text-gray-800 mb-4">
-                  CDS Group *
-                </label>
-                <select
-                  name="cdsGroup"
-                  value={formData.cdsGroup}
-                  onChange={handleChange}
-                  className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent bg-white"
-                  required
-                >
-                  <option value="">Select CDS Group</option>
-                  {cdsGroups.map(group => (
-                    <option key={group} value={group}>{group}</option>
-                  ))}
-                </select>
-              </div>
+              )}
+
+              {formData.role === 'Zonal Inspector' && (
+                <div>
+                  <label className="block text-2xl font-semibold text-white mb-4">
+                    Zone *
+                  </label>
+                  <input
+                    type="text"
+                    name="zone"
+                    value={formData.zone}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                    placeholder="Enter Zone (e.g., South-West, North-Central)"
+                    required
+                  />
+                </div>
+              )}
+
+              {formData.role === 'CDS Group Coordinator' && (
+                <div>
+                  <label className="block text-2xl font-semibold text-white mb-4">
+                    CDS Group *
+                  </label>
+                  <select
+                    name="cdsGroup"
+                    value={formData.cdsGroup}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                    required
+                  >
+                    <option value="" className="bg-slate-800">Select CDS Group</option>
+                    {cdsGroups.map(group => (
+                      <option key={group} value={group} className="bg-slate-800">{group}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {formData.role === 'PPA Owner' && (
+                <>
+                  <div>
+                    <label className="block text-2xl font-semibold text-white mb-4">
+                      PPA/Organization Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="ppaName"
+                      value={formData.ppaName}
+                      onChange={handleChange}
+                      className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                      placeholder="Enter organization name"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-2xl font-semibold text-white mb-4">
+                      Business Address *
+                    </label>
+                    <textarea
+                      name="ppaAddress"
+                      value={formData.ppaAddress}
+                      onChange={handleChange}
+                      rows="3"
+                      className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                      placeholder="Enter complete business address"
+                      required
+                    ></textarea>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div>
+                      <label className="block text-2xl font-semibold text-white mb-4">
+                        PPA Email
+                      </label>
+                      <input
+                        type="email"
+                        name="ppaEmail"
+                        value={formData.ppaEmail}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                        placeholder="Organization email"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-2xl font-semibold text-white mb-4">
+                        PPA Phone
+                      </label>
+                      <input
+                        type="tel"
+                        name="ppaPhone"
+                        value={formData.ppaPhone}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                        placeholder="Organization phone"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div>
-                  <label className="block text-2xl font-semibold text-gray-800 mb-4">
+                  <label className="block text-2xl font-semibold text-white mb-4">
                     Password *
                   </label>
                   <input
@@ -352,13 +461,13 @@ export default function SignupPage() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                    className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
                     placeholder="Create password"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-2xl font-semibold text-gray-800 mb-4">
+                  <label className="block text-2xl font-semibold text-white mb-4">
                     Confirm Password *
                   </label>
                   <input
@@ -366,7 +475,7 @@ export default function SignupPage() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+                    className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
                     placeholder="Confirm password"
                     required
                   />
@@ -377,18 +486,18 @@ export default function SignupPage() {
           
           {step === 3 && (
             <div className="space-y-10">
-              <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-8">
+              <div className="bg-blue-500/20 border-2 border-blue-500 rounded-2xl p-8 backdrop-blur-sm">
                 <div className="text-center mb-6">
                   <div className="text-6xl mb-4">📧</div>
-                  <h3 className="text-3xl font-bold text-blue-800 mb-3">Verification Required</h3>
-                  <p className="text-xl text-blue-700">
+                  <h3 className="text-3xl font-bold text-blue-200 mb-3">Verification Required</h3>
+                  <p className="text-xl text-blue-100">
                     We've sent a 6-digit code to <span className="font-bold">{formData.email}</span>
                   </p>
-                  <p className="text-lg text-blue-600 mt-2">Demo code: 123456</p>
+                  <p className="text-lg text-blue-200 mt-2">Demo code: 123456</p>
                 </div>
                 
                 <div>
-                  <label className="block text-2xl font-semibold text-gray-800 mb-4">
+                  <label className="block text-2xl font-semibold text-white mb-4">
                     Verification Code *
                   </label>
                   <input
@@ -396,7 +505,7 @@ export default function SignupPage() {
                     name="verificationCode"
                     value={formData.verificationCode}
                     onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent text-center tracking-widest"
+                    className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent text-center tracking-widest"
                     placeholder="Enter 6-digit code"
                     maxLength="6"
                     required
@@ -407,32 +516,52 @@ export default function SignupPage() {
                   <button
                     type="button"
                     onClick={handleResendCode}
-                    className="text-xl text-[#008753] hover:text-[#006b42] font-medium"
+                    className="text-xl text-[#00a866] hover:text-white font-medium transition"
                   >
                     Didn't receive code? Resend (New: 654321)
                   </button>
                 </div>
               </div>
               
-              <div className="bg-gray-100 rounded-2xl p-8">
-                <h4 className="text-2xl font-bold text-gray-800 mb-4">Account Summary</h4>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border-2 border-white/20">
+                <h4 className="text-2xl font-bold text-white mb-4">Account Summary</h4>
                 <div className="space-y-4">
                   <div className="flex justify-between">
-                    <span className="text-xl text-gray-600">Name:</span>
-                    <span className="text-xl font-semibold">{formData.firstName} {formData.lastName}</span>
+                    <span className="text-xl text-gray-300">Name:</span>
+                    <span className="text-xl font-semibold text-white">{formData.firstName} {formData.lastName}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-xl text-gray-600">State Code:</span>
-                    <span className="text-xl font-semibold">{formData.stateCode}</span>
+                    <span className="text-xl text-gray-300">Role:</span>
+                    <span className="text-xl font-semibold text-white">{formData.role}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-xl text-gray-600">Serving State:</span>
-                    <span className="text-xl font-semibold">{formData.servingState}</span>
+                    <span className="text-xl text-gray-300">State:</span>
+                    <span className="text-xl font-semibold text-white">{formData.state}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-xl text-gray-600">CDS Group:</span>
-                    <span className="text-xl font-semibold">{formData.cdsGroup}</span>
-                  </div>
+                  {formData.localGovernment && (
+                    <div className="flex justify-between">
+                      <span className="text-xl text-gray-300">Local Government:</span>
+                      <span className="text-xl font-semibold text-white">{formData.localGovernment}</span>
+                    </div>
+                  )}
+                  {formData.zone && (
+                    <div className="flex justify-between">
+                      <span className="text-xl text-gray-300">Zone:</span>
+                      <span className="text-xl font-semibold text-white">{formData.zone}</span>
+                    </div>
+                  )}
+                  {formData.cdsGroup && (
+                    <div className="flex justify-between">
+                      <span className="text-xl text-gray-300">CDS Group:</span>
+                      <span className="text-xl font-semibold text-white">{formData.cdsGroup}</span>
+                    </div>
+                  )}
+                  {formData.ppaName && (
+                    <div className="flex justify-between">
+                      <span className="text-xl text-gray-300">Organization:</span>
+                      <span className="text-xl font-semibold text-white">{formData.ppaName}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -452,21 +581,21 @@ export default function SignupPage() {
             )}
             
             <button 
-              type="submit" 
-              className="px-10 py-5 text-2xl font-bold bg-[#008753] text-white rounded-xl hover:bg-[#006b42] focus:outline-none focus:ring-4 focus:ring-[#008753] transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
+              onClick={handleSubmit}
+              className="px-10 py-5 text-2xl font-bold bg-gradient-to-r from-[#008753] to-[#00a866] text-white rounded-xl hover:shadow-xl hover:shadow-[#008753]/50 focus:outline-none focus:ring-4 focus:ring-[#008753] transition-all duration-300 transform hover:scale-[1.02]"
               disabled={loading}
             >
               {loading ? 'Processing...' : step === 3 ? 'Complete Registration' : 'Next Step →'}
             </button>
           </div>
           
-          <div className="text-center pt-10 border-t">
-            <span className="text-gray-600 text-xl">Already have an account? </span>
-            <Link href="/login" className="text-[#008753] font-bold text-xl hover:underline ml-2">
+          <div className="text-center pt-10 border-t border-white/20">
+            <span className="text-gray-300 text-xl">Already have an admin account? </span>
+            <Link href="/admin/login" className="text-[#00a866] font-bold text-xl hover:underline ml-2">
               Login here
             </Link>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export default function AdminLoginPage() {
   const [formData, setFormData] = useState({
     identifier: '',
     password: ''
@@ -18,7 +18,7 @@ export default function LoginPage() {
     setError('');
     
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/auth/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -27,27 +27,26 @@ export default function LoginPage() {
       const data = await response.json();
       
       if (response.ok) {
-        localStorage.setItem('nysc_token', data.token);
-        router.push('/corpers-dashboard');
+        const adminData = {
+          adminId: data.adminId,
+          fullName: data.fullName,
+          email: data.email,
+          role: data.role,
+          permissions: data.permissions
+        };
+        router.push('/admin-dashboard');
       } else {
         setError(data.message || 'Login failed');
       }
     } catch (err) {
-      localStorage.setItem('nysc_token', 'demo-token-12345');
-      const mockUserData = {
-        firstName: 'Demo',
-        lastName: 'User',
-        fullName: 'Demo User',
-        email: formData.identifier || 'demo@example.com',
-        phone: '08012345678',
-        stateCode: formData.identifier.includes('/NYSC') ? formData.identifier : 'NYSC/2024A/123456',
-        servingState: 'Lagos',
-        localGovernment: 'Ikeja',
-        ppa: 'Ministry of Education',
-        cdsGroup: 'Education'
+      const mockAdminData = {
+        adminId: 'ADM-001',
+        fullName: 'Admin User',
+        email: formData.identifier || 'admin@nysc.gov.ng',
+        role: 'Super Administrator',
+        permissions: ['all']
       };
-      localStorage.setItem('nysc_user', JSON.stringify(mockUserData));
-      router.push('/corpers-dashboard');
+      router.push('/admin-dashboard');
     } finally {
       setLoading(false);
     }
@@ -61,75 +60,73 @@ export default function LoginPage() {
   };
 
   const handleDemoLogin = () => {
-    localStorage.setItem('nysc_token', 'demo-token-12345');
-    const mockUserData = {
-      firstName: 'John',
-      lastName: 'Doe',
-      fullName: 'John Doe',
-      email: 'john.doe@example.com',
-      phone: '08012345678',
-      stateCode: 'NYSC/2024A/123456',
-      servingState: 'Lagos',
-      localGovernment: 'Ikeja',
-      ppa: 'Ministry of Education',
-      cdsGroup: 'Education'
+    const mockAdminData = {
+      adminId: 'ADM-001',
+      fullName: 'John Admin',
+      email: 'admin@nysc.gov.ng',
+      role: 'Super Administrator',
+      permissions: ['all']
     };
-    localStorage.setItem('nysc_user', JSON.stringify(mockUserData));
-    router.push('/corpers-dashboard');
+    router.push('/admin-dashboard');
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center py-8 px-4 bg-gray-50 font-playfair relative overflow-hidden">
-      <div className="absolute inset-0 z-0 opacity-10">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center py-8 px-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 font-playfair relative overflow-hidden">
+      <div className="absolute inset-0 z-0 opacity-5">
         <div 
           className="w-full h-full bg-center bg-no-repeat bg-contain"
           style={{ backgroundImage: "url('/images/nysc-logo.png')" }}
         ></div>
       </div>
+
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-[#008753] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse delay-700"></div>
+      </div>
       
       <Link 
         href="/" 
-        className="absolute top-6 left-6 z-20 text-3xl text-[#008753] hover:text-[#006b42] transition"
+        className="absolute top-6 left-6 z-20 text-3xl text-white hover:text-gray-300 transition"
       >
         &lt;
       </Link>
       
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
           <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#008753] rounded-full animate-spin"></div>
         </div>
       )}
       
       <div className="relative z-10 w-full max-w-lg">
         <div className="mb-12 text-center">
-          <h1 className="text-5xl font-bold text-[#008753] mb-4">CDS Attendance Portal</h1>
-          <p className="text-gray-600 text-2xl">Login to access your attendance records</p>
+          <h1 className="text-5xl font-bold text-white mb-4">Administrator Portal</h1>
+          <p className="text-gray-300 text-2xl">Access the CDS management system</p>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-10">
+        <div className="space-y-10">
           {error && (
-            <div className="bg-red-50 text-red-600 p-5 rounded-lg text-lg">
+            <div className="bg-red-500/20 border-2 border-red-500 text-red-200 p-5 rounded-lg text-lg">
               {error}
             </div>
           )}
           
           <div>
-            <label className="block text-2xl font-semibold text-gray-800 mb-4">
-              Email or State Code
+            <label className="block text-2xl font-semibold text-white mb-4">
+              Admin Email
             </label>
             <input
               type="text"
               name="identifier"
               value={formData.identifier}
               onChange={handleChange}
-              className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
-              placeholder="Enter your email or state code"
+              className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+              placeholder="admin@nysc.gov.ng"
               required
             />
           </div>
           
           <div>
-            <label className="block text-2xl font-semibold text-gray-800 mb-4">
+            <label className="block text-2xl font-semibold text-white mb-4">
               Password
             </label>
             <input
@@ -137,43 +134,43 @@ export default function LoginPage() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full rounded-xl border-2 border-gray-300 px-5 py-5 text-xl focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
+              onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e)}
+              className="w-full rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-5 py-5 text-xl text-white placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#008753] focus:border-transparent"
               placeholder="Enter your password"
               required
             />
           </div>
           
           <div className="text-right">
-            <Link href="/forgot-password" className="text-xl text-[#008753] hover:underline font-medium">
+            <Link href="/admin/forgot-password" className="text-xl text-[#00a866] hover:underline font-medium">
               Forgot Password?
             </Link>
           </div>
           
           <button 
-            type="submit" 
-            className="w-full rounded-xl bg-[#008753] text-white font-bold py-5 text-2xl hover:bg-[#006b42] focus:outline-none focus:ring-4 focus:ring-[#008753] transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
+            onClick={handleSubmit}
+            className="w-full rounded-xl bg-gradient-to-r from-[#008753] to-[#00a866] text-white font-bold py-5 text-2xl hover:shadow-xl hover:shadow-[#008753]/50 focus:outline-none focus:ring-4 focus:ring-[#008753] transition-all duration-300 transform hover:scale-[1.02]"
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
           </button>
           
           <div className="text-center pt-8">
             <button
               type="button"
               onClick={handleDemoLogin}
-              className="w-full bg-gray-100 text-gray-800 font-bold py-5 text-xl rounded-xl hover:bg-gray-200 transition mb-8 shadow-md"
+              className="w-full bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white font-bold py-5 text-xl rounded-xl hover:bg-white/20 transition mb-8"
             >
-              Quick Demo Login
+              Quick Demo Access
             </button>
             
-            <div className="border-t pt-8">
-              <span className="text-gray-600 text-xl">Don't have an account? </span>
-              <Link href="/signup" className="text-[#008753] font-bold text-xl hover:underline ml-2">
-                Sign up here
-              </Link>
+            <div className="border-t border-white/20 pt-8">
+              <p className="text-gray-400 text-sm">
+                Authorized personnel only. All activities are monitored.
+              </p>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
