@@ -15,14 +15,15 @@ export default function LGIDashboardPage() {
   useEffect(() => {
     const checkAuth = () => {
       const mockLgiData = {
-        lgiId: 'LGI-001',
-        fullName: 'Mr. Adebayo',
-        email: 'adebayo@nysc.gov.ng',
-        role: 'Local Government Inspector',
-        state: 'Lagos',
-        localGovernment: 'Ikeja',
+        lgiId: 'FCT-LGI-001',
+        fullName: 'Mr. Chukwuma',
+        email: 'chukwuma@nysc.gov.ng',
+        role: 'FCT Local Government Inspector',
+        state: 'FCT Abuja',
+        localGovernment: 'Abuja Municipal',
+        zone: 'Zone 4',
         permissions: ['monitor_corpers', 'verify_attendance', 'generate_reports', 'manage_ppa'],
-        jurisdiction: 'Ikeja Local Government Area',
+        jurisdiction: 'Abuja Municipal Area Council',
         createdAt: new Date().toISOString()
       };
 
@@ -30,7 +31,7 @@ export default function LGIDashboardPage() {
       const storedLgi = localStorage.getItem('nysc_lgi_user');
 
       if (!token || !storedLgi) {
-        localStorage.setItem('nysc_lgi_token', 'demo_lgi_token_' + Date.now());
+        localStorage.setItem('nysc_lgi_token', 'fct_lgi_token_' + Date.now());
         localStorage.setItem('nysc_lgi_user', JSON.stringify(mockLgiData));
         setLgiData(mockLgiData);
       } else {
@@ -43,7 +44,7 @@ export default function LGIDashboardPage() {
         }
       }
 
-      const savedDarkMode = localStorage.getItem('nysc_dark_mode');
+      const savedDarkMode = localStorage.getItem('nysc_user_dark_mode');
       if (savedDarkMode === 'true') {
         setDarkMode(true);
         document.documentElement.classList.add('dark');
@@ -65,7 +66,7 @@ export default function LGIDashboardPage() {
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
-    localStorage.setItem('nysc_dark_mode', newDarkMode.toString());
+    localStorage.setItem('nysc_user_dark_mode', newDarkMode.toString());
     
     if (newDarkMode) {
       document.documentElement.classList.add('dark');
@@ -77,7 +78,7 @@ export default function LGIDashboardPage() {
   const handleLogout = () => {
     localStorage.removeItem('nysc_lgi_token');
     localStorage.removeItem('nysc_lgi_user');
-    localStorage.removeItem('nysc_dark_mode');
+    localStorage.removeItem('nysc_user_dark_mode');
     router.push('/login');
   };
 
@@ -91,7 +92,7 @@ export default function LGIDashboardPage() {
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
         <div className="text-center">
           <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#008753] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading LGI Dashboard...</p>
+          <p className="text-gray-600 dark:text-gray-300">Loading FCT LGI Dashboard...</p>
         </div>
       </div>
     );
@@ -122,6 +123,7 @@ export default function LGIDashboardPage() {
               lgiData={lgiData}
               onUpdateProfile={handleUpdateProfile}
               darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
             />
           </main>
         </div>

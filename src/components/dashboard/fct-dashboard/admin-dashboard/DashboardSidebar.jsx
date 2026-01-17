@@ -5,16 +5,16 @@ export default function DashboardSidebar({ activeSection, setActiveSection, dark
   const [collapsed, setCollapsed] = useState(false);
 
   const menuItems = [
-    { id: 'overview', label: 'Dashboard', icon: '📊', color: 'bg-blue-500' },
-    { id: 'corpers', label: 'Corpers', icon: '🎓', color: 'bg-green-500' },
-    { id: 'ppa', label: 'PPA Owners', icon: '🏢', color: 'bg-purple-500' },
-    { id: 'cds', label: 'CDS Coordinators', icon: '👥', color: 'bg-yellow-500' },
-    { id: 'lgi', label: 'LG Inspectors', icon: '🏛️', color: 'bg-indigo-500' },
-    { id: 'zi', label: 'Zonal Inspectors', icon: '🌍', color: 'bg-pink-500' },
-    { id: 'admins', label: 'All Administrators', icon: '👑', color: 'bg-red-500' },
-    { id: 'attendance', label: 'Attendance', icon: '📝', color: 'bg-teal-500' },
-    { id: 'reports', label: 'Reports', icon: '📈', color: 'bg-orange-500' },
-    { id: 'settings', label: 'Settings', icon: '⚙️', color: 'bg-gray-500' }
+    { id: 'overview', label: 'Dashboard', icon: '📊', color: 'bg-gradient-to-r from-blue-500 to-cyan-500' },
+    { id: 'corpers', label: 'Corpers', icon: '🎓', color: 'bg-gradient-to-r from-green-500 to-emerald-500' },
+    { id: 'ppa', label: 'PPA Owners', icon: '🏢', color: 'bg-gradient-to-r from-purple-500 to-pink-500' },
+    { id: 'cds', label: 'CDS Coordinators', icon: '👥', color: 'bg-gradient-to-r from-yellow-500 to-amber-500' },
+    { id: 'lgi', label: 'LG Inspectors', icon: '🏛️', color: 'bg-gradient-to-r from-indigo-500 to-blue-500' },
+    { id: 'zi', label: 'Zonal Inspectors', icon: '🌍', color: 'bg-gradient-to-r from-pink-500 to-rose-500' },
+    { id: 'admins', label: 'All Administrators', icon: '👑', color: 'bg-gradient-to-r from-red-500 to-pink-500' },
+    { id: 'attendance', label: 'Attendance', icon: '📝', color: 'bg-gradient-to-r from-teal-500 to-green-500' },
+    { id: 'reports', label: 'Reports', icon: '📈', color: 'bg-gradient-to-r from-orange-500 to-red-500' },
+    { id: 'settings', label: 'Settings', icon: '⚙️', color: 'bg-gradient-to-r from-gray-500 to-gray-700' }
   ];
 
   return (
@@ -37,7 +37,7 @@ export default function DashboardSidebar({ activeSection, setActiveSection, dark
                 onClick={() => setActiveSection(item.id)}
                 className={`w-full flex items-center p-3 rounded-lg transition ${
                   activeSection === item.id
-                    ? 'bg-[#008753] text-white'
+                    ? 'bg-gradient-to-r from-[#008753] to-[#00a86b] text-white'
                     : `${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`
                 }`}
               >
@@ -55,22 +55,22 @@ export default function DashboardSidebar({ activeSection, setActiveSection, dark
       
       {!collapsed && (
         <div className={`p-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} mt-4`}>
-          <div className={`text-xs font-semibold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>SYSTEM STATS</div>
+          <div className={`text-xs font-semibold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>FCT STATS</div>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-700 dark:text-gray-300">Total Corpers</span>
-              <span className="font-bold text-[#008753] dark:text-green-400">1,247</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">FCT Corpers</span>
+              <span className="font-bold text-[#008753] dark:text-green-400">873</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-700 dark:text-gray-300">Active Admins</span>
-              <span className="font-bold text-blue-600 dark:text-blue-400">32</span>
+              <span className="font-bold text-blue-600 dark:text-blue-400">24</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-700 dark:text-gray-300">Today's Att.</span>
-              <span className="font-bold text-green-600 dark:text-green-400">85%</span>
+              <span className="font-bold text-green-600 dark:text-green-400">92%</span>
             </div>
-            <button className="w-full mt-3 bg-[#008753] text-white py-2 px-4 rounded-lg hover:bg-[#006b42] transition font-medium text-sm">
-              Generate Report
+            <button className="w-full mt-3 bg-gradient-to-r from-[#008753] to-[#00a86b] text-white py-2 px-4 rounded-lg hover:opacity-90 transition font-medium text-sm">
+              Generate FCT Report
             </button>
           </div>
         </div>

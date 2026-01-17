@@ -9,7 +9,7 @@ import PPAReports from './sections/PPAReports';
 import PPAProfile from './sections/PPAProfile';
 import PPASettings from './sections/PPASettings';
 
-export default function DashboardContent({ activeSection, ppaData, onUpdateProfile, darkMode }) {
+export default function DashboardContent({ activeSection, ppaData, onUpdateProfile, darkMode, toggleDarkMode }) {
   const renderSection = () => {
     switch(activeSection) {
       case 'overview':
@@ -27,42 +27,47 @@ export default function DashboardContent({ activeSection, ppaData, onUpdateProfi
       case 'profile':
         return <PPAProfile ppaData={ppaData} onUpdateProfile={onUpdateProfile} darkMode={darkMode} />;
       case 'settings':
-        return <PPASettings ppaData={ppaData} darkMode={darkMode} />;
+        return <PPASettings ppaData={ppaData} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />;
       default:
         return <PPAOverview ppaData={ppaData} darkMode={darkMode} />;
     }
   };
 
   const sectionTitles = {
-    overview: 'PPA Dashboard Overview',
-    corpers: 'My Corpers',
-    attendance: 'Attendance Management',
-    schedule: 'Work Schedule',
-    evaluation: 'Performance Evaluations',
-    reports: 'Reports & Analytics',
-    profile: 'Organization Profile',
-    settings: 'Settings'
+    overview: 'FCT PPA Dashboard Overview',
+    corpers: 'My FCT Corpers',
+    attendance: 'FCT Attendance Management',
+    schedule: 'FCT Work Schedule',
+    evaluation: 'FCT Performance Evaluations',
+    reports: 'FCT Reports & Analytics',
+    profile: 'FCT Organization Profile',
+    settings: 'FCT PPA Settings'
   };
 
   const sectionDescriptions = {
-    overview: `Welcome to ${ppaData?.organization} PPA Dashboard`,
-    corpers: 'Manage corpers assigned to your organization',
-    attendance: 'Track and manage daily attendance',
-    schedule: 'View and manage work schedules',
-    evaluation: 'Evaluate corper performance',
-    reports: 'Generate organization reports',
-    profile: 'Manage organization information',
-    settings: 'Configure PPA settings'
+    overview: `Welcome to FCT ${ppaData?.organization} PPA Dashboard`,
+    corpers: 'Manage FCT corpers assigned to your organization',
+    attendance: 'Track and manage daily FCT attendance',
+    schedule: 'View and manage FCT work schedules',
+    evaluation: 'Evaluate FCT corper performance',
+    reports: 'Generate FCT organization reports',
+    profile: 'Manage FCT organization information',
+    settings: 'Configure FCT PPA settings'
   };
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {sectionTitles[activeSection] || 'Dashboard'}
-        </h1>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 bg-gradient-to-r from-[#008753] to-[#00a86b] rounded-lg flex items-center justify-center text-white font-bold">
+            FCT
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+            {sectionTitles[activeSection] || 'Dashboard'}
+          </h1>
+        </div>
         <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-          {sectionDescriptions[activeSection] || 'Manage your PPA'}
+          {sectionDescriptions[activeSection] || 'Manage your FCT PPA'}
         </p>
       </div>
       

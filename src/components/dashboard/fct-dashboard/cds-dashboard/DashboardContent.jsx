@@ -10,7 +10,7 @@ import CDSReports from './sections/CDSReports';
 import CDSProfile from './sections/CDSProfile';
 import CDSSettings from './sections/CDSSettings';
 
-export default function DashboardContent({ activeSection, cdsData, onUpdateProfile, darkMode }) {
+export default function DashboardContent({ activeSection, cdsData, onUpdateProfile, darkMode, toggleDarkMode }) {
   const renderSection = () => {
     switch(activeSection) {
       case 'overview':
@@ -30,44 +30,49 @@ export default function DashboardContent({ activeSection, cdsData, onUpdateProfi
       case 'profile':
         return <CDSProfile cdsData={cdsData} onUpdateProfile={onUpdateProfile} darkMode={darkMode} />;
       case 'settings':
-        return <CDSSettings cdsData={cdsData} darkMode={darkMode} />;
+        return <CDSSettings cdsData={cdsData} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />;
       default:
         return <CDSOverview cdsData={cdsData} darkMode={darkMode} />;
     }
   };
 
   const sectionTitles = {
-    overview: 'CDS Dashboard Overview',
-    members: 'Group Members Management',
-    attendance: 'Attendance Management',
-    activities: 'CDS Activities',
-    dues: 'CDS Dues Management',
-    schedule: 'CDS Schedule',
-    reports: 'Reports & Analytics',
-    profile: 'My Profile',
-    settings: 'Settings'
+    overview: 'FCT CDS Dashboard Overview',
+    members: 'FCT Group Members Management',
+    attendance: 'FCT Attendance Management',
+    activities: 'FCT CDS Activities',
+    dues: 'FCT CDS Dues Management',
+    schedule: 'FCT CDS Schedule',
+    reports: 'FCT Reports & Analytics',
+    profile: 'FCT Coordinator Profile',
+    settings: 'FCT CDS Settings'
   };
 
   const sectionDescriptions = {
-    overview: `Welcome to ${cdsData?.cdsGroup} CDS Dashboard`,
-    members: `Manage all members in ${cdsData?.cdsGroup} group`,
-    attendance: 'Track and manage member attendance',
-    activities: 'Plan and organize CDS activities',
-    dues: 'Manage CDS dues collection and tracking',
-    schedule: 'View and manage CDS meeting schedule',
-    reports: 'Generate group reports and analytics',
-    profile: 'Manage your coordinator profile',
-    settings: 'Configure CDS group settings'
+    overview: `Welcome to FCT ${cdsData?.cdsGroup} CDS Dashboard`,
+    members: `Manage all members in FCT ${cdsData?.cdsGroup} group`,
+    attendance: 'Track and manage FCT member attendance',
+    activities: 'Plan and organize FCT CDS activities',
+    dues: 'Manage FCT CDS dues collection and tracking',
+    schedule: 'View and manage FCT CDS meeting schedule',
+    reports: 'Generate FCT group reports and analytics',
+    profile: 'Manage your FCT coordinator profile',
+    settings: 'Configure FCT CDS group settings'
   };
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {sectionTitles[activeSection] || 'Dashboard'}
-        </h1>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 bg-gradient-to-r from-[#008753] to-[#00a86b] rounded-lg flex items-center justify-center text-white font-bold">
+            FCT
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+            {sectionTitles[activeSection] || 'Dashboard'}
+          </h1>
+        </div>
         <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-          {sectionDescriptions[activeSection] || 'Manage your CDS group'}
+          {sectionDescriptions[activeSection] || 'Manage your FCT CDS group'}
         </p>
       </div>
       

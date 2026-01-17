@@ -65,7 +65,7 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-1">
           <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6 sticky top-6`}>
-            <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>PPA Settings</h3>
+            <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>LGI Settings</h3>
             <div className="space-y-2">
               {['general', 'notifications', 'jurisdiction', 'security', 'reporting', 'account'].map(tab => (
                 <button

@@ -1,22 +1,22 @@
 'use client';
 import { useState } from 'react';
 
-export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
+export default function ZonalSettings({ zonalData, darkMode, toggleDarkMode }) {
   const [activeTab, setActiveTab] = useState('general');
   const [settings, setSettings] = useState({
     notifications: {
       email: true,
       sms: false,
       push: true,
-      newCorperAlert: true,
-      ppaVerification: true,
-      complaintAlert: true
+      newLGIAlert: true,
+      clearanceRequests: true,
+      reportAlerts: true
     },
-    jurisdiction: {
-      autoAssignCorpers: true,
-      requirePpaApproval: true,
-      attendanceThreshold: '75',
-      maxComplaintDays: '7'
+    zone: {
+      autoApprovePPA: true,
+      requireLGIApproval: true,
+      attendanceThreshold: '80',
+      maxClearanceDays: '5'
     },
     security: {
       twoFactor: false,
@@ -25,8 +25,8 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
     },
     reporting: {
       autoGenerateWeekly: true,
-      includeInactiveCorpers: false,
-      sendToAdmin: true
+      includeAllAreas: false,
+      sendToSuperAdmin: true
     }
   });
 
@@ -65,9 +65,9 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-1">
           <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6 sticky top-6`}>
-            <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>PPA Settings</h3>
+            <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Zonal Inspector Settings</h3>
             <div className="space-y-2">
-              {['general', 'notifications', 'jurisdiction', 'security', 'reporting', 'account'].map(tab => (
+              {['general', 'notifications', 'zone', 'security', 'reporting', 'account'].map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -99,14 +99,14 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
                       </label>
                       <div className="flex space-x-4">
                         <button
-                          onClick={() => toggleDarkMode(false)}
+                          onClick={toggleDarkMode}
                           className={`p-4 border-2 rounded-lg ${!darkMode ? 'border-[#008753] bg-green-50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600'}`}
                         >
                           <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Light Mode</div>
                           <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Default theme</div>
                         </button>
                         <button
-                          onClick={() => toggleDarkMode(true)}
+                          onClick={toggleDarkMode}
                           className={`p-4 border-2 rounded-lg ${darkMode ? 'border-[#008753] bg-green-50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600'}`}
                         >
                           <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Dark Mode</div>
@@ -186,36 +186,36 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>New Corper Alert</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify when new corper registers in jurisdiction</div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>New LGI Alert</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify when new LGI registers in zone</div>
                     </div>
-                    <button onClick={() => handleToggle('notifications', 'newCorperAlert')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.newCorperAlert ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.newCorperAlert ? 'left-7' : 'left-1'}`}></div>
+                    <button onClick={() => handleToggle('notifications', 'newLGIAlert')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.newLGIAlert ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.newLGIAlert ? 'left-7' : 'left-1'}`}></div>
                       </div>
                     </button>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>PPA Verification Requests</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify about PPA verification requests</div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Clearance Requests</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify about clearance requests</div>
                     </div>
-                    <button onClick={() => handleToggle('notifications', 'ppaVerification')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.ppaVerification ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.ppaVerification ? 'left-7' : 'left-1'}`}></div>
+                    <button onClick={() => handleToggle('notifications', 'clearanceRequests')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.clearanceRequests ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.clearanceRequests ? 'left-7' : 'left-1'}`}></div>
                       </div>
                     </button>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Complaint Alerts</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify about new complaints</div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Report Alerts</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify about new reports</div>
                     </div>
-                    <button onClick={() => handleToggle('notifications', 'complaintAlert')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.complaintAlert ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.complaintAlert ? 'left-7' : 'left-1'}`}></div>
+                    <button onClick={() => handleToggle('notifications', 'reportAlerts')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.reportAlerts ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.reportAlerts ? 'left-7' : 'left-1'}`}></div>
                       </div>
                     </button>
                   </div>
@@ -236,32 +236,32 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
             </div>
           )}
 
-          {activeTab === 'jurisdiction' && (
+          {activeTab === 'zone' && (
             <div className="space-y-6">
-              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Jurisdiction Settings</h3>
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Zone Settings</h3>
               
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Auto Assign Corpers</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Automatically assign new corpers to jurisdiction</div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Auto Approve PPA</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Automatically approve new PPA registrations</div>
                     </div>
-                    <button onClick={() => handleToggle('jurisdiction', 'autoAssignCorpers')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.jurisdiction.autoAssignCorpers ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.jurisdiction.autoAssignCorpers ? 'left-7' : 'left-1'}`}></div>
+                    <button onClick={() => handleToggle('zone', 'autoApprovePPA')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.zone.autoApprovePPA ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.zone.autoApprovePPA ? 'left-7' : 'left-1'}`}></div>
                       </div>
                     </button>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Require PPA Approval</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Require LGI approval for PPA assignments</div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Require LGI Approval</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Require LGI approval for zone activities</div>
                     </div>
-                    <button onClick={() => handleToggle('jurisdiction', 'requirePpaApproval')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.jurisdiction.requirePpaApproval ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.jurisdiction.requirePpaApproval ? 'left-7' : 'left-1'}`}></div>
+                    <button onClick={() => handleToggle('zone', 'requireLGIApproval')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.zone.requireLGIApproval ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.zone.requireLGIApproval ? 'left-7' : 'left-1'}`}></div>
                       </div>
                     </button>
                   </div>
@@ -272,42 +272,42 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
                     </label>
                     <input
                       type="number"
-                      value={settings.jurisdiction.attendanceThreshold}
-                      onChange={(e) => handleInputChange('jurisdiction', 'attendanceThreshold', e.target.value)}
+                      value={settings.zone.attendanceThreshold}
+                      onChange={(e) => handleInputChange('zone', 'attendanceThreshold', e.target.value)}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008753] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
                       min="0"
                       max="100"
                     />
-                    <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Corpers below this threshold will be flagged</p>
+                    <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>LGIs below this threshold will be flagged</p>
                   </div>
 
                   <div>
                     <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                      Maximum Complaint Resolution Days
+                      Maximum Clearance Days
                     </label>
                     <input
                       type="number"
-                      value={settings.jurisdiction.maxComplaintDays}
-                      onChange={(e) => handleInputChange('jurisdiction', 'maxComplaintDays', e.target.value)}
+                      value={settings.zone.maxClearanceDays}
+                      onChange={(e) => handleInputChange('zone', 'maxClearanceDays', e.target.value)}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008753] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
                       min="1"
                       max="30"
                     />
-                    <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Days allowed to resolve complaints</p>
+                    <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Days allowed to process clearance</p>
                   </div>
                 </div>
               </div>
 
               <div className={`${darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'} border rounded-xl p-6`}>
-                <h4 className={`text-lg font-semibold ${darkMode ? 'text-blue-300' : 'text-blue-800'} mb-3`}>FCT Jurisdiction Information</h4>
+                <h4 className={`text-lg font-semibold ${darkMode ? 'text-blue-300' : 'text-blue-800'} mb-3`}>FCT Zone Information</h4>
                 <p className={`${darkMode ? 'text-blue-400' : 'text-blue-700'} mb-2`}>
-                  LGA: {lgiData?.localGovernment} • Zone: {lgiData?.zone || '4'}
+                  Zone: {zonalData?.zone} • Areas: {zonalData?.areas?.length || 10}
                 </p>
                 <p className={`${darkMode ? 'text-blue-400' : 'text-blue-700'} mb-4`}>
-                  Corpers: 285 • PPAs: 68 • CDS Groups: 15
+                  LGIs: 42 • PPAs: 187 • Corpers: 873
                 </p>
                 <button className={`px-6 py-2 rounded-lg font-medium ${darkMode ? 'bg-blue-800/30 text-blue-300 hover:bg-blue-800/50' : 'bg-blue-100 text-blue-800 hover:bg-blue-200'}`}>
-                  Edit Jurisdiction Details
+                  Edit Zone Details
                 </button>
               </div>
             </div>
@@ -322,7 +322,7 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Auto Generate Weekly Reports</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Automatically generate weekly jurisdiction reports</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Automatically generate weekly zone reports</div>
                     </div>
                     <button onClick={() => handleToggle('reporting', 'autoGenerateWeekly')} className="relative">
                       <div className={`w-12 h-6 rounded-full transition ${settings.reporting.autoGenerateWeekly ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
@@ -333,24 +333,24 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Include Inactive Corpers</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Include inactive corpers in reports</div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Include All Areas</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Include all FCT areas in reports</div>
                     </div>
-                    <button onClick={() => handleToggle('reporting', 'includeInactiveCorpers')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.reporting.includeInactiveCorpers ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.reporting.includeInactiveCorpers ? 'left-7' : 'left-1'}`}></div>
+                    <button onClick={() => handleToggle('reporting', 'includeAllAreas')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.reporting.includeAllAreas ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.reporting.includeAllAreas ? 'left-7' : 'left-1'}`}></div>
                       </div>
                     </button>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Send Reports to Admin</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Automatically send reports to FCT admin</div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Send Reports to Super Admin</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Automatically send reports to FCT super admin</div>
                     </div>
-                    <button onClick={() => handleToggle('reporting', 'sendToAdmin')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.reporting.sendToAdmin ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.reporting.sendToAdmin ? 'left-7' : 'left-1'}`}></div>
+                    <button onClick={() => handleToggle('reporting', 'sendToSuperAdmin')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.reporting.sendToSuperAdmin ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.reporting.sendToSuperAdmin ? 'left-7' : 'left-1'}`}></div>
                       </div>
                     </button>
                   </div>
@@ -432,15 +432,15 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
                       </div>
                       <div>
                         <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Member Since</div>
-                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>March 2024</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>January 2024</div>
                       </div>
                       <div>
                         <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Account Type</div>
-                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Local Government Inspector</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Zonal Inspector</div>
                       </div>
                       <div>
-                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Jurisdiction</div>
-                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>FCT Abuja</div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Zone</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>FCT Abuja Zones</div>
                       </div>
                     </div>
                   </div>
@@ -449,12 +449,12 @@ export default function LGISettings({ lgiData, darkMode, toggleDarkMode }) {
                     <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Account Actions</h4>
                     <div className="space-y-4">
                       <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-yellow-400' : 'border-gray-300 hover:bg-gray-50 text-yellow-600'}`}>
-                        <div className="font-medium">Export Jurisdiction Data</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Download all jurisdiction information</div>
+                        <div className="font-medium">Export Zone Data</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Download all zone information</div>
                       </button>
                       <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-red-700 hover:bg-red-900/20 text-red-400' : 'border-red-300 hover:bg-red-50 text-red-600'}`}>
-                        <div className="font-medium">Transfer Jurisdiction</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Transfer jurisdiction to another inspector</div>
+                        <div className="font-medium">Transfer Zone</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Transfer zone to another inspector</div>
                       </button>
                       <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-red-700 hover:bg-red-900/20 text-red-400' : 'border-red-300 hover:bg-red-50 text-red-600'}`}>
                         <div className="font-medium">Delete Account</div>

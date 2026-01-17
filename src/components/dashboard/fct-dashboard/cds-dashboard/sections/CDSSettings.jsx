@@ -1,271 +1,423 @@
 'use client';
 import { useState } from 'react';
 
-export default function CDSMembers({ cdsData, darkMode }) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [selectedMember, setSelectedMember] = useState(null);
-
-  const members = [
-    { id: 1, name: 'John Doe', stateCode: 'NYSC/ABJ/2024/001', ppa: 'Tech Solutions Ltd', attendance: '95%', dues: 'Paid', status: 'active', lastSeen: 'Today' },
-    { id: 2, name: 'Sarah Smith', stateCode: 'NYSC/ABJ/2024/002', ppa: 'General Hospital', attendance: '88%', dues: 'Paid', status: 'active', lastSeen: 'Today' },
-    { id: 3, name: 'Michael Brown', stateCode: 'NYSC/ABJ/2024/003', ppa: 'Digital Hub', attendance: '75%', dues: 'Pending', status: 'active', lastSeen: 'Yesterday' },
-    { id: 4, name: 'Emily Davis', stateCode: 'NYSC/ABJ/2024/004', ppa: 'Sports Academy', attendance: '92%', dues: 'Paid', status: 'active', lastSeen: 'Today' },
-    { id: 5, name: 'Robert Wilson', stateCode: 'NYSC/ABJ/2024/005', ppa: 'Farm Solutions', attendance: '60%', dues: 'Overdue', status: 'warning', lastSeen: '3 days ago' },
-    { id: 6, name: 'Lisa Anderson', stateCode: 'NYSC/ABJ/2024/006', ppa: 'Law Chambers', attendance: '45%', dues: 'Overdue', status: 'inactive', lastSeen: '1 week ago' },
-    { id: 7, name: 'David Miller', stateCode: 'NYSC/ABJ/2024/007', ppa: 'Green Earth', attendance: '100%', dues: 'Paid', status: 'active', lastSeen: 'Today' },
-    { id: 8, name: 'Jennifer Lee', stateCode: 'NYSC/ABJ/2024/008', ppa: 'Tech Academy', attendance: '85%', dues: 'Paid', status: 'active', lastSeen: 'Today' }
-  ];
-
-  const statuses = ['all', 'active', 'warning', 'inactive'];
-
-  const filteredMembers = members.filter(member => {
-    const matchesSearch = member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         member.stateCode.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || member.status === filterStatus;
-    return matchesSearch && matchesStatus;
+export default function CDSSettings({ cdsData, darkMode, toggleDarkMode }) {
+  const [activeTab, setActiveTab] = useState('general');
+  const [settings, setSettings] = useState({
+    notifications: {
+      email: true,
+      sms: false,
+      push: true,
+      reminders: true,
+      memberAttendance: true,
+      duesReminders: true
+    },
+    privacy: {
+      memberVisibility: 'group',
+      showAttendanceToAll: true,
+      showContactToMembers: false
+    },
+    security: {
+      twoFactor: false,
+      loginAlerts: true,
+      sessionTimeout: '30'
+    },
+    groupSettings: {
+      autoAttendance: true,
+      duesAutoReminder: true,
+      meetingReminder: '24',
+      maxAbsentDays: '3'
+    }
   });
 
-  const handleAddMember = () => {
-    alert('Add new member form will open');
+  const handleToggle = (category, key) => {
+    setSettings(prev => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        [key]: !prev[category][key]
+      }
+    }));
   };
 
-  const handleViewMember = (member) => {
-    setSelectedMember(member);
+  const handleSelectChange = (category, key, value) => {
+    setSettings(prev => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        [key]: value
+      }
+    }));
   };
 
-  const handleSendMessage = (member) => {
-    alert(`Send message to: ${member.name}`);
+  const handleInputChange = (category, key, value) => {
+    setSettings(prev => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        [key]: value
+      }
+    }));
   };
 
   return (
-    <div className={`rounded-xl ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'} transition-colors duration-300`}>
-      <div className="p-5 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">Group Members</h3>
-          
-          <div className="flex flex-col md:flex-row gap-3">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search members..."
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#008753] transition-colors duration-300"
-            />
-            
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#008753] transition-colors duration-300"
-            >
-              {statuses.map(status => (
-                <option key={status} value={status} className="dark:bg-gray-800">
-                  {status === 'all' ? 'All Status' : status.charAt(0).toUpperCase() + status.slice(1)}
-                </option>
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="lg:col-span-1">
+          <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6 sticky top-6`}>
+            <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>CDS Settings</h3>
+            <div className="space-y-2">
+              {['general', 'notifications', 'privacy', 'security', 'group', 'account'].map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`w-full text-left p-3 rounded-lg transition ${
+                    activeTab === tab
+                      ? 'bg-gradient-to-r from-[#008753] to-[#00a86b] text-white'
+                      : `${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`
+                  }`}
+                >
+                  <span className="capitalize">{tab} Settings</span>
+                </button>
               ))}
-            </select>
-            
-            <button
-              onClick={handleAddMember}
-              className="bg-[#008753] text-white px-4 py-2 rounded-lg hover:bg-[#006b42] transition-colors duration-300 font-medium"
-            >
-              + Add Member
-            </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className={darkMode ? 'bg-gray-700' : 'bg-gray-50'}>
-            <tr>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Member Details</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">State Code</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">PPA</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Attendance</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Dues</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Status</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {filteredMembers.map(member => (
-              <tr key={member.id} className={darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} style={{transition: 'background-color 0.3s ease'}}>
-                <td className="py-4 px-4">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
-                      {member.name.charAt(0)}
-                    </div>
+        <div className="lg:col-span-3">
+          {activeTab === 'general' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>General Settings</h3>
+              
+              <div className="space-y-6">
+                <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                  <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Display Preferences</h4>
+                  <div className="space-y-4">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-white text-sm">{member.name}</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">Last seen: {member.lastSeen}</div>
+                      <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                        Display Theme
+                      </label>
+                      <div className="flex space-x-4">
+                        <button
+                          onClick={() => toggleDarkMode(false)}
+                          className={`p-4 border-2 rounded-lg ${!darkMode ? 'border-[#008753] bg-green-50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600'}`}
+                        >
+                          <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Light Mode</div>
+                          <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Default theme</div>
+                        </button>
+                        <button
+                          onClick={() => toggleDarkMode(true)}
+                          className={`p-4 border-2 rounded-lg ${darkMode ? 'border-[#008753] bg-green-50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600'}`}
+                        >
+                          <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Dark Mode</div>
+                          <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Reduced eye strain</div>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                        Language Preference
+                      </label>
+                      <select
+                        value="en"
+                        onChange={(e) => handleSelectChange('preferences', 'language', e.target.value)}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008753] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
+                      >
+                        <option value="en">English</option>
+                        <option value="fr">French</option>
+                        <option value="ha">Hausa</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                        Time Zone
+                      </label>
+                      <select
+                        value="WAT"
+                        onChange={(e) => handleSelectChange('preferences', 'timezone', e.target.value)}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008753] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
+                      >
+                        <option value="WAT">West Africa Time (WAT)</option>
+                        <option value="GMT">Greenwich Mean Time (GMT)</option>
+                      </select>
                     </div>
                   </div>
-                </td>
-                <td className="py-4 px-4">
-                  <span className="font-mono text-sm text-gray-900 dark:text-gray-300">{member.stateCode}</span>
-                </td>
-                <td className="py-4 px-4">
-                  <div className="text-sm text-gray-900 dark:text-gray-300 truncate max-w-[120px]">{member.ppa}</div>
-                </td>
-                <td className="py-4 px-4">
-                  <div className="flex items-center">
-                    <div className={`w-16 h-2 rounded-full mr-2 ${darkMode ? 'bg-gray-600' : 'bg-gray-200'}`}>
-                      <div 
-                        className={`h-2 rounded-full ${
-                          parseInt(member.attendance) >= 80 ? 'bg-green-500' :
-                          parseInt(member.attendance) >= 60 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`}
-                        style={{ width: member.attendance }}
-                      ></div>
+                </div>
+
+                <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                  <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Display Options</h4>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Compact Member View</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Show more members per page</div>
+                      </div>
+                      <button className="relative">
+                        <div className={`w-12 h-6 rounded-full transition bg-gray-300 dark:bg-gray-600`}>
+                          <div className={`absolute top-1 left-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'}`}></div>
+                        </div>
+                      </button>
                     </div>
-                    <span className={`text-xs font-medium ${
-                      parseInt(member.attendance) >= 80 ? 'text-green-600 dark:text-green-400' :
-                      parseInt(member.attendance) >= 60 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'
-                    }`}>
-                      {member.attendance}
-                    </span>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show Statistics</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Display stats on dashboard</div>
+                      </div>
+                      <button className="relative">
+                        <div className={`w-12 h-6 rounded-full transition ${true ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                          <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${true ? 'left-7' : 'left-1'}`}></div>
+                        </div>
+                      </button>
+                    </div>
                   </div>
-                </td>
-                <td className="py-4 px-4">
-                  <span className={`px-3 py-1 rounded-full text-xs ${
-                    member.dues === 'Paid' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
-                    member.dues === 'Pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
-                    'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
-                  }`}>
-                    {member.dues}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <span className={`px-3 py-1 rounded-full text-xs ${
-                    member.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
-                    member.status === 'warning' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
-                    'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
-                  }`}>
-                    {member.status}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleViewMember(member)}
-                      className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800/50 text-xs transition-colors duration-300"
-                    >
-                      View
-                    </button>
-                    <button
-                      onClick={() => handleSendMessage(member)}
-                      className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-200 dark:hover:bg-green-800/50 text-xs transition-colors duration-300"
-                    >
-                      Message
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'notifications' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Notification Settings</h3>
+              
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Member Attendance Alerts</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify when members mark attendance</div>
+                    </div>
+                    <button onClick={() => handleToggle('notifications', 'memberAttendance')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.memberAttendance ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.memberAttendance ? 'left-7' : 'left-1'}`}></div>
+                      </div>
                     </button>
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
-      <div className="p-5 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Showing {filteredMembers.length} of {members.length} members
-          </div>
-          <div className="flex space-x-2">
-            <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm transition-colors duration-300">
-              Previous
-            </button>
-            <button className="px-3 py-1 bg-[#008753] text-white rounded-lg text-sm">1</button>
-            <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm transition-colors duration-300">
-              2
-            </button>
-            <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm transition-colors duration-300">
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Dues Payment Reminders</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Remind members of pending dues</div>
+                    </div>
+                    <button onClick={() => handleToggle('notifications', 'duesReminders')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.duesReminders ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.duesReminders ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
 
-      {selectedMember && (
-        <div className={`p-5 border-t border-gray-200 dark:border-gray-700 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} transition-colors duration-300`}>
-          <div className="flex justify-between items-start mb-4">
-            <h4 className="font-semibold text-gray-900 dark:text-white">Member Details</h4>
-            <button
-              onClick={() => setSelectedMember(null)}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-            >
-              ✕
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Full Name</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedMember.name}</div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">State Code</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedMember.stateCode}</div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">PPA</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedMember.ppa}</div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Meeting Reminders</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Remind about upcoming CDS meetings</div>
+                    </div>
+                    <button onClick={() => handleToggle('notifications', 'reminders')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.reminders ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.reminders ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Push Notifications</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Browser and app notifications</div>
+                    </div>
+                    <button onClick={() => handleToggle('notifications', 'push')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.push ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.push ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-            
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Attendance</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedMember.attendance}</div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Dues Status</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedMember.dues}</div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Last Seen</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedMember.lastSeen}</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex space-x-3">
-              <button className="px-4 py-2 bg-[#008753] text-white rounded-lg hover:bg-[#006b42] transition-colors duration-300 text-sm font-medium">
-                View Full Profile
-              </button>
-              <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium transition-colors duration-300">
-                Send Reminder
-              </button>
-              <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium transition-colors duration-300">
-                View Attendance
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      <div className={`p-5 border-t border-gray-200 dark:border-gray-700 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} transition-colors duration-300`}>
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Group Summary</h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-3 rounded-lg bg-white dark:bg-gray-800">
-            <div className="text-lg font-bold text-[#008753] dark:text-green-400">48</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Total Members</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-white dark:bg-gray-800">
-            <div className="text-lg font-bold text-green-600 dark:text-green-400">88%</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Avg. Attendance</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-white dark:bg-gray-800">
-            <div className="text-lg font-bold text-blue-600 dark:text-blue-400">42</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Active Members</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-white dark:bg-gray-800">
-            <div className="text-lg font-bold text-yellow-600 dark:text-yellow-400">6</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Need Attention</div>
-          </div>
+          {activeTab === 'group' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Group Settings</h3>
+              
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Auto Attendance</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Automatically mark absent after deadline</div>
+                    </div>
+                    <button onClick={() => handleToggle('groupSettings', 'autoAttendance')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.groupSettings.autoAttendance ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.groupSettings.autoAttendance ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Dues Auto Reminder</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Automatically send dues reminders</div>
+                    </div>
+                    <button onClick={() => handleToggle('groupSettings', 'duesAutoReminder')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.groupSettings.duesAutoReminder ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.groupSettings.duesAutoReminder ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                      Meeting Reminder Time
+                    </label>
+                    <select
+                      value={settings.groupSettings.meetingReminder}
+                      onChange={(e) => handleSelectChange('groupSettings', 'meetingReminder', e.target.value)}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008753] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
+                    >
+                      <option value="1">1 hour before</option>
+                      <option value="6">6 hours before</option>
+                      <option value="12">12 hours before</option>
+                      <option value="24">24 hours before</option>
+                      <option value="48">48 hours before</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                      Maximum Absent Days Before Warning
+                    </label>
+                    <input
+                      type="number"
+                      value={settings.groupSettings.maxAbsentDays}
+                      onChange={(e) => handleInputChange('groupSettings', 'maxAbsentDays', e.target.value)}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008753] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
+                      min="1"
+                      max="30"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className={`${darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'} border rounded-xl p-6`}>
+                <h4 className={`text-lg font-semibold ${darkMode ? 'text-blue-300' : 'text-blue-800'} mb-3`}>FCT CDS Group Information</h4>
+                <p className={`${darkMode ? 'text-blue-400' : 'text-blue-700'} mb-4`}>
+                  Group: {cdsData?.cdsGroup} • Zone: {cdsData?.zone || '4'} • Members: 52
+                </p>
+                <button className={`px-6 py-2 rounded-lg font-medium ${darkMode ? 'bg-blue-800/30 text-blue-300 hover:bg-blue-800/50' : 'bg-blue-100 text-blue-800 hover:bg-blue-200'}`}>
+                  Edit Group Details
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'security' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Security Settings</h3>
+              
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Two-Factor Authentication</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Add an extra layer of security</div>
+                    </div>
+                    <button onClick={() => handleToggle('security', 'twoFactor')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.security.twoFactor ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.security.twoFactor ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Login Alerts</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify you of new sign-ins</div>
+                    </div>
+                    <button onClick={() => handleToggle('security', 'loginAlerts')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.security.loginAlerts ? 'bg-[#008753]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.security.loginAlerts ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                      Session Timeout (minutes)
+                    </label>
+                    <select
+                      value={settings.security.sessionTimeout}
+                      onChange={(e) => handleSelectChange('security', 'sessionTimeout', e.target.value)}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008753] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
+                    >
+                      <option value="15">15 minutes</option>
+                      <option value="30">30 minutes</option>
+                      <option value="60">60 minutes</option>
+                      <option value="120">2 hours</option>
+                      <option value="240">4 hours</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <h4 className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'} mb-3`}>Change Password</h4>
+                    <button className="px-6 py-3 bg-gradient-to-r from-[#008753] to-[#00a86b] text-white rounded-lg hover:opacity-90 font-medium">
+                      Update Password
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'account' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Account Settings</h3>
+              
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                <div className="space-y-6">
+                  <div>
+                    <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Account Information</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Account Status</div>
+                        <div className="text-green-600 font-semibold">Active</div>
+                      </div>
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Member Since</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>March 2024</div>
+                      </div>
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Account Type</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>CDS Coordinator</div>
+                      </div>
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Jurisdiction</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>FCT Abuja</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-6">
+                    <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Account Actions</h4>
+                    <div className="space-y-4">
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-yellow-400' : 'border-gray-300 hover:bg-gray-50 text-yellow-600'}`}>
+                        <div className="font-medium">Export Group Data</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Download all group information</div>
+                      </button>
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-red-700 hover:bg-red-900/20 text-red-400' : 'border-red-300 hover:bg-red-50 text-red-600'}`}>
+                        <div className="font-medium">Transfer Coordinator Role</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Assign coordinator to another member</div>
+                      </button>
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-red-700 hover:bg-red-900/20 text-red-400' : 'border-red-300 hover:bg-red-50 text-red-600'}`}>
+                        <div className="font-medium">Delete Account</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Permanently remove your account</div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
