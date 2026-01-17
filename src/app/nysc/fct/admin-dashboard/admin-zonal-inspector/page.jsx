@@ -1,9 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import FCTZonalDashboardNavbar from '../../../../components/dashboard/fct-dashboard/zonal-inspector-dashboard/DashboardNavbar';
-import FCTZonalDashboardSidebar from '../../../../components/dashboard/fct-dashboard/zonal-inspector-dashboard/DashboardSidebar';
-import FCTZonalDashboardContent from '../../../../../components/dashboard/fct-dashboard/zonal-inspector-dashboard/';
+import FCTZonalDashboardNavbar from '../../../../../components/dashboard/fct-dashboard/zonal-inspector-dashboard/DashboardNavbar';
+import FCTZonalDashboardSidebar from '../../../../../components/dashboard/fct-dashboard/zonal-inspector-dashboard/DashboardSidebar';
+import FCTZonalDashboardContent from '../../../../../components/dashboard/fct-dashboard/zonal-inspector-dashboard/DashboardContent';
 
 export default function FCTZonalDashboardPage() {
   const [zonalData, setZonalData] = useState(null);
