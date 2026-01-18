@@ -9,7 +9,7 @@ import PPAReports from './sections/PPAReports';
 import PPAProfile from './sections/PPAProfile';
 import PPASettings from './sections/PPASettings';
 
-export default function DashboardContent({ activeSection, ppaData, onUpdateProfile, darkMode }) {
+export default function DashboardContent({ activeSection, ppaData, onUpdateProfile, darkMode, toggleDarkMode }) {
   const renderSection = () => {
     switch(activeSection) {
       case 'overview':
@@ -27,42 +27,47 @@ export default function DashboardContent({ activeSection, ppaData, onUpdateProfi
       case 'profile':
         return <PPAProfile ppaData={ppaData} onUpdateProfile={onUpdateProfile} darkMode={darkMode} />;
       case 'settings':
-        return <PPASettings ppaData={ppaData} darkMode={darkMode} />;
+        return <PPASettings ppaData={ppaData} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />;
       default:
         return <PPAOverview ppaData={ppaData} darkMode={darkMode} />;
     }
   };
 
   const sectionTitles = {
-    overview: 'PPA Dashboard Overview',
-    corpers: 'My Corpers',
-    attendance: 'Attendance Management',
-    schedule: 'Work Schedule',
-    evaluation: 'Performance Evaluations',
-    reports: 'Reports & Analytics',
-    profile: 'Organization Profile',
-    settings: 'Settings'
+    overview: 'Lagos PPA Dashboard Overview',
+    corpers: 'Lagos My Corpers',
+    attendance: 'Lagos Attendance Management',
+    schedule: 'Lagos Work Schedule',
+    evaluation: 'Lagos Performance Evaluations',
+    reports: 'Lagos Reports & Analytics',
+    profile: 'Lagos Organization Profile',
+    settings: 'Lagos PPA Settings'
   };
 
   const sectionDescriptions = {
-    overview: `Welcome to ${ppaData?.organization} PPA Dashboard`,
-    corpers: 'Manage corpers assigned to your organization',
-    attendance: 'Track and manage daily attendance',
-    schedule: 'View and manage work schedules',
-    evaluation: 'Evaluate corper performance',
-    reports: 'Generate organization reports',
-    profile: 'Manage organization information',
-    settings: 'Configure PPA settings'
+    overview: `Welcome to Lagos ${ppaData?.organization} PPA Dashboard • Centre of Excellence`,
+    corpers: 'Manage Lagos corpers assigned to your organization',
+    attendance: 'Track and manage daily Lagos attendance',
+    schedule: 'View and manage Lagos work schedules',
+    evaluation: 'Evaluate Lagos corper performance',
+    reports: 'Generate Lagos organization reports',
+    profile: 'Manage Lagos organization information',
+    settings: 'Configure Lagos PPA settings'
   };
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {sectionTitles[activeSection] || 'Dashboard'}
-        </h1>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 bg-gradient-to-r from-[#003366] to-[#004080] rounded-lg flex items-center justify-center text-white font-bold">
+            LA
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {sectionTitles[activeSection] || 'Dashboard'}
+          </h1>
+        </div>
         <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-          {sectionDescriptions[activeSection] || 'Manage your PPA'}
+          {sectionDescriptions[activeSection] || 'Manage your Lagos PPA'}
         </p>
       </div>
       

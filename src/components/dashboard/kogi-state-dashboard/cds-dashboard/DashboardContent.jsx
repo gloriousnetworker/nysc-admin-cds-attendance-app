@@ -10,7 +10,7 @@ import CDSReports from './sections/CDSReports';
 import CDSProfile from './sections/CDSProfile';
 import CDSSettings from './sections/CDSSettings';
 
-export default function DashboardContent({ activeSection, cdsData, onUpdateProfile, darkMode }) {
+export default function DashboardContent({ activeSection, cdsData, onUpdateProfile, darkMode, toggleDarkMode }) {
   const renderSection = () => {
     switch(activeSection) {
       case 'overview':
@@ -30,44 +30,49 @@ export default function DashboardContent({ activeSection, cdsData, onUpdateProfi
       case 'profile':
         return <CDSProfile cdsData={cdsData} onUpdateProfile={onUpdateProfile} darkMode={darkMode} />;
       case 'settings':
-        return <CDSSettings cdsData={cdsData} darkMode={darkMode} />;
+        return <CDSSettings cdsData={cdsData} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />;
       default:
         return <CDSOverview cdsData={cdsData} darkMode={darkMode} />;
     }
   };
 
   const sectionTitles = {
-    overview: 'CDS Dashboard Overview',
-    members: 'Group Members Management',
-    attendance: 'Attendance Management',
-    activities: 'CDS Activities',
-    dues: 'CDS Dues Management',
-    schedule: 'CDS Schedule',
-    reports: 'Reports & Analytics',
-    profile: 'My Profile',
-    settings: 'Settings'
+    overview: 'Kogi CDS Dashboard Overview',
+    members: 'Kogi Group Members Management',
+    attendance: 'Kogi Attendance Management',
+    activities: 'Kogi CDS Activities',
+    dues: 'Kogi CDS Dues Management',
+    schedule: 'Kogi CDS Schedule',
+    reports: 'Kogi CDS Reports & Analytics',
+    profile: 'Kogi CDS Profile',
+    settings: 'Kogi CDS Settings'
   };
 
   const sectionDescriptions = {
-    overview: `Welcome to ${cdsData?.cdsGroup} CDS Dashboard`,
-    members: `Manage all members in ${cdsData?.cdsGroup} group`,
-    attendance: 'Track and manage member attendance',
-    activities: 'Plan and organize CDS activities',
-    dues: 'Manage CDS dues collection and tracking',
-    schedule: 'View and manage CDS meeting schedule',
-    reports: 'Generate group reports and analytics',
-    profile: 'Manage your coordinator profile',
-    settings: 'Configure CDS group settings'
+    overview: `Welcome to Kogi ${cdsData?.cdsGroup} CDS Dashboard • Confluence State`,
+    members: `Manage all Kogi members in ${cdsData?.cdsGroup} group`,
+    attendance: 'Track and manage Kogi member attendance',
+    activities: 'Plan and organize Kogi CDS activities',
+    dues: 'Manage Kogi CDS dues collection and tracking',
+    schedule: 'View and manage Kogi CDS meeting schedule',
+    reports: 'Generate Kogi group reports and analytics',
+    profile: 'Manage your Kogi coordinator profile',
+    settings: 'Configure Kogi CDS group settings'
   };
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {sectionTitles[activeSection] || 'Dashboard'}
-        </h1>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 bg-gradient-to-r from-[#006600] to-[#008800] rounded-lg flex items-center justify-center text-white font-bold">
+            KG
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {sectionTitles[activeSection] || 'Dashboard'}
+          </h1>
+        </div>
         <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-          {sectionDescriptions[activeSection] || 'Manage your CDS group'}
+          {sectionDescriptions[activeSection] || 'Manage your Kogi CDS group'}
         </p>
       </div>
       

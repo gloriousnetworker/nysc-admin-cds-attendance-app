@@ -5,15 +5,16 @@ export default function ZonalDashboardSidebar({ activeSection, setActiveSection,
   const [collapsed, setCollapsed] = useState(false);
 
   const menuItems = [
-    { id: 'overview', label: 'Dashboard', icon: '📊', color: 'bg-blue-500' },
-    { id: 'lgis', label: 'LGIs', icon: '🏛️', color: 'bg-green-500' },
-    { id: 'states', label: 'States', icon: '🗺️', color: 'bg-purple-500' },
-    { id: 'ppas', label: 'PPA Overview', icon: '🏢', color: 'bg-yellow-500' },
-    { id: 'corpers', label: 'Corpers', icon: '🎓', color: 'bg-indigo-500' },
-    { id: 'reports', label: 'Reports', icon: '📈', color: 'bg-pink-500' },
-    { id: 'clearance', label: 'Clearance', icon: '✅', color: 'bg-teal-500' },
-    { id: 'audit', label: 'Audit Trail', icon: '🔍', color: 'bg-orange-500' },
-    { id: 'profile', label: 'Profile', icon: '👤', color: 'bg-gray-500' }
+    { id: 'overview', label: 'Dashboard', icon: '📊', color: 'bg-gradient-to-r from-blue-600 to-blue-400' },
+    { id: 'lgis', label: 'LGIs', icon: '🏛️', color: 'bg-gradient-to-r from-green-600 to-green-400' },
+    { id: 'states', label: 'States', icon: '🗺️', color: 'bg-gradient-to-r from-purple-600 to-purple-400' },
+    { id: 'ppas', label: 'PPA Overview', icon: '🏢', color: 'bg-gradient-to-r from-yellow-600 to-yellow-400' },
+    { id: 'corpers', label: 'Corpers', icon: '🎓', color: 'bg-gradient-to-r from-indigo-600 to-indigo-400' },
+    { id: 'reports', label: 'Reports', icon: '📈', color: 'bg-gradient-to-r from-pink-600 to-pink-400' },
+    { id: 'clearance', label: 'Clearance', icon: '✅', color: 'bg-gradient-to-r from-teal-600 to-teal-400' },
+    { id: 'audit', label: 'Audit Trail', icon: '🔍', color: 'bg-gradient-to-r from-orange-600 to-orange-400' },
+    { id: 'profile', label: 'Profile', icon: '👤', color: 'bg-gradient-to-r from-gray-600 to-gray-400' },
+    { id: 'settings', label: 'Settings', icon: '⚙️', color: 'bg-gradient-to-r from-red-600 to-red-400' }
   ];
 
   return (
@@ -36,7 +37,7 @@ export default function ZonalDashboardSidebar({ activeSection, setActiveSection,
                 onClick={() => setActiveSection(item.id)}
                 className={`w-full flex items-center p-3 rounded-lg transition-colors duration-300 ${
                   activeSection === item.id
-                    ? 'bg-[#008753] text-white'
+                    ? 'bg-gradient-to-r from-[#003366] to-[#004080] text-white'
                     : `${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`
                 }`}
               >
@@ -54,11 +55,11 @@ export default function ZonalDashboardSidebar({ activeSection, setActiveSection,
       
       {!collapsed && (
         <div className={`p-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} mt-4`}>
-          <div className={`text-xs font-semibold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>ZONAL STATS</div>
+          <div className={`text-xs font-semibold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>LAGOS ZONE STATS</div>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Total States</span>
-              <span className="font-bold text-[#008753] dark:text-green-400">{zonalData?.states?.length || 6}</span>
+              <span className="font-bold text-[#003366] dark:text-blue-400">{zonalData?.states?.length || 6}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Active LGIs</span>
@@ -68,8 +69,12 @@ export default function ZonalDashboardSidebar({ activeSection, setActiveSection,
               <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Zone Rating</span>
               <span className="font-bold text-green-600 dark:text-green-400">4.7</span>
             </div>
-            <button className="w-full mt-3 bg-[#008753] text-white py-2 px-4 rounded-lg hover:bg-[#006b42] transition-colors duration-300 font-medium text-sm">
-              Generate Zonal Report
+            <div className="flex justify-between items-center">
+              <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Lagos Focus</span>
+              <span className="font-bold text-[#E5A823] dark:text-yellow-400">Priority</span>
+            </div>
+            <button className="w-full mt-3 bg-gradient-to-r from-[#003366] to-[#004080] text-white py-2 px-4 rounded-lg hover:opacity-90 transition-colors duration-300 font-medium text-sm">
+              Generate Lagos Zone Report
             </button>
           </div>
         </div>

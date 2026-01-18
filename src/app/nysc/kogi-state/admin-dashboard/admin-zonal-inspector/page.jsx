@@ -15,14 +15,14 @@ export default function ZonalDashboardPage() {
   useEffect(() => {
     const checkAuth = () => {
       const mockZonalData = {
-        zonalId: 'ZI-001',
-        fullName: 'Dr. Ahmed Musa',
-        email: 'ahmed.musa@nysc.gov.ng',
-        role: 'Zonal Inspector',
-        zone: 'South-West Zone',
-        states: ['Lagos', 'Ogun', 'Oyo', 'Osun', 'Ondo', 'Ekiti'],
+        zonalId: 'KOG-ZI-001',
+        fullName: 'Dr. Kogi Zonal Inspector',
+        email: 'zonal.kogi@nysc.gov.ng',
+        role: 'Kogi State Zonal Inspector',
+        zone: 'Kogi Central Zone',
+        states: ['Lokoja', 'Okene', 'Kabba', 'Idah', 'Ankpa', 'Dekina'],
         permissions: ['monitor_lgis', 'oversee_ppa', 'generate_zonal_reports', 'approve_clearance'],
-        jurisdiction: 'South-West Geo-Political Zone',
+        jurisdiction: 'Kogi Central Geo-Political Zone',
         createdAt: new Date().toISOString()
       };
 
@@ -30,7 +30,7 @@ export default function ZonalDashboardPage() {
       const storedZonal = localStorage.getItem('nysc_zonal_user');
 
       if (!token || !storedZonal) {
-        localStorage.setItem('nysc_zonal_token', 'demo_zonal_token_' + Date.now());
+        localStorage.setItem('nysc_zonal_token', 'kogi_zonal_token_' + Date.now());
         localStorage.setItem('nysc_zonal_user', JSON.stringify(mockZonalData));
         setZonalData(mockZonalData);
       } else {
@@ -43,7 +43,7 @@ export default function ZonalDashboardPage() {
         }
       }
 
-      const savedDarkMode = localStorage.getItem('nysc_dark_mode');
+      const savedDarkMode = localStorage.getItem('nysc_user_dark_mode');
       if (savedDarkMode === 'true') {
         setDarkMode(true);
         document.documentElement.classList.add('dark');
@@ -65,7 +65,7 @@ export default function ZonalDashboardPage() {
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
-    localStorage.setItem('nysc_dark_mode', newDarkMode.toString());
+    localStorage.setItem('nysc_user_dark_mode', newDarkMode.toString());
     
     if (newDarkMode) {
       document.documentElement.classList.add('dark');
@@ -77,7 +77,7 @@ export default function ZonalDashboardPage() {
   const handleLogout = () => {
     localStorage.removeItem('nysc_zonal_token');
     localStorage.removeItem('nysc_zonal_user');
-    localStorage.removeItem('nysc_dark_mode');
+    localStorage.removeItem('nysc_user_dark_mode');
     router.push('/login');
   };
 
@@ -90,8 +90,8 @@ export default function ZonalDashboardPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
         <div className="text-center">
-          <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#008753] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading Zonal Inspector Dashboard...</p>
+          <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#006600] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading Kogi Zonal Dashboard...</p>
         </div>
       </div>
     );
@@ -123,6 +123,7 @@ export default function ZonalDashboardPage() {
               zonalData={zonalData}
               onUpdateProfile={handleUpdateProfile}
               darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
             />
           </main>
         </div>

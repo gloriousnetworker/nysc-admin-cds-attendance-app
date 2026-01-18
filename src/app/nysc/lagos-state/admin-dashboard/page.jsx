@@ -15,12 +15,13 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     const checkAuth = () => {
       const mockAdminData = {
-        adminId: 'ADM-001',
-        fullName: 'Super Administrator',
-        email: 'admin@nysc.gov.ng',
-        role: 'Super Administrator',
+        adminId: 'LAG-ADM-001',
+        fullName: 'Lagos State Super Administrator',
+        email: 'admin.lagos@nysc.gov.ng',
+        role: 'Lagos State Super Admin',
         permissions: ['all'],
-        state: 'National',
+        state: 'Lagos State',
+        lga: 'Ikeja',
         createdAt: new Date().toISOString()
       };
 
@@ -28,7 +29,7 @@ export default function AdminDashboardPage() {
       const storedAdmin = localStorage.getItem('nysc_admin_user');
 
       if (!token || !storedAdmin) {
-        localStorage.setItem('nysc_admin_token', 'demo_admin_token_' + Date.now());
+        localStorage.setItem('nysc_admin_token', 'lagos_admin_token_' + Date.now());
         localStorage.setItem('nysc_admin_user', JSON.stringify(mockAdminData));
         setAdminData(mockAdminData);
       } else {
@@ -41,7 +42,7 @@ export default function AdminDashboardPage() {
         }
       }
 
-      const savedDarkMode = localStorage.getItem('nysc_dark_mode');
+      const savedDarkMode = localStorage.getItem('nysc_user_dark_mode');
       if (savedDarkMode === 'true') {
         setDarkMode(true);
         document.documentElement.classList.add('dark');
@@ -63,7 +64,7 @@ export default function AdminDashboardPage() {
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
-    localStorage.setItem('nysc_dark_mode', newDarkMode.toString());
+    localStorage.setItem('nysc_user_dark_mode', newDarkMode.toString());
     
     if (newDarkMode) {
       document.documentElement.classList.add('dark');
@@ -75,7 +76,7 @@ export default function AdminDashboardPage() {
   const handleLogout = () => {
     localStorage.removeItem('nysc_admin_token');
     localStorage.removeItem('nysc_admin_user');
-    localStorage.removeItem('nysc_dark_mode');
+    localStorage.removeItem('nysc_user_dark_mode');
     router.push('/login');
   };
 
@@ -88,8 +89,8 @@ export default function AdminDashboardPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
         <div className="text-center">
-          <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#008753] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading Admin Dashboard...</p>
+          <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#003366] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading Lagos State Admin Dashboard...</p>
         </div>
       </div>
     );
@@ -120,6 +121,7 @@ export default function AdminDashboardPage() {
               adminData={adminData}
               onUpdateProfile={handleUpdateProfile}
               darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
             />
           </main>
         </div>

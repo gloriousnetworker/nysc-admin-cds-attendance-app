@@ -1,23 +1,18 @@
 'use client';
 import { useState } from 'react';
 
-export default function SettingsManagement({ adminData, onUpdateProfile, darkMode, toggleDarkMode }) {
+export default function ZonalSettings({ zonalData, darkMode, toggleDarkMode }) {
   const [activeTab, setActiveTab] = useState('general');
   const [settings, setSettings] = useState({
     notifications: {
       email: true,
       sms: false,
       push: true,
-      reminders: true
+      alerts: true
     },
     privacy: {
-      profileVisibility: 'public',
-      showAttendance: true,
+      profileVisibility: 'zonal-only',
       showContact: false
-    },
-    security: {
-      twoFactor: false,
-      loginAlerts: true
     },
     preferences: {
       theme: 'light',
@@ -53,7 +48,7 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
           <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6 sticky top-6`}>
             <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Settings</h3>
             <div className="space-y-2">
-              {['general', 'notifications', 'privacy', 'security', 'account'].map(tab => (
+              {['general', 'notifications', 'privacy', 'zone-settings'].map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -63,7 +58,7 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
                       : `${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`
                   }`}
                 >
-                  <span className="capitalize">{tab} Settings</span>
+                  <span className="capitalize">{tab === 'zone-settings' ? 'Zone Settings' : tab} Settings</span>
                 </button>
               ))}
             </div>
@@ -111,7 +106,6 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#003366] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
                       >
                         <option value="en">English</option>
-                        <option value="fr">French</option>
                         <option value="yo">Yoruba</option>
                         <option value="ha">Hausa</option>
                         <option value="ig">Igbo</option>
@@ -129,19 +123,18 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
                       >
                         <option value="WAT">West Africa Time (WAT)</option>
                         <option value="GMT">Greenwich Mean Time (GMT)</option>
-                        <option value="EST">Eastern Standard Time (EST)</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
                 <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
-                  <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Lagos State Display</h4>
+                  <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Lagos Zone Display</h4>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show Lagos State Badge</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Display Lagos State branding</div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show Lagos Zone Badge</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Display Lagos State zone branding</div>
                       </div>
                       <button className="relative">
                         <div className={`w-12 h-6 rounded-full transition bg-gradient-to-r from-[#003366] to-[#004080]`}>
@@ -152,8 +145,8 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
 
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Lagos LGA View</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Group by Local Government Area</div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Zone View Mode</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Focus on Lagos State priority</div>
                       </div>
                       <button className="relative">
                         <div className={`w-12 h-6 rounded-full ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}>
@@ -176,7 +169,7 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
                   <div className="flex items-center justify-between">
                     <div>
                       <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Email Notifications</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Receive updates via email</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Receive zone updates via email</div>
                     </div>
                     <button onClick={() => handleToggle('notifications', 'email')} className="relative">
                       <div className={`w-12 h-6 rounded-full transition ${settings.notifications.email ? 'bg-gradient-to-r from-[#003366] to-[#004080]' : 'bg-gray-300 dark:bg-gray-600'}`}>
@@ -187,8 +180,8 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>SMS Notifications</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Receive text message alerts</div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>SMS Alerts</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Receive zone text message alerts</div>
                     </div>
                     <button onClick={() => handleToggle('notifications', 'sms')} className="relative">
                       <div className={`w-12 h-6 rounded-full transition ${settings.notifications.sms ? 'bg-gradient-to-r from-[#003366] to-[#004080]' : 'bg-gray-300 dark:bg-gray-600'}`}>
@@ -211,12 +204,12 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Lagos CDS Reminders</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Lagos State CDS meeting reminders</div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Lagos Zone Alerts</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Important Lagos zone notifications</div>
                     </div>
-                    <button onClick={() => handleToggle('notifications', 'reminders')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.reminders ? 'bg-gradient-to-r from-[#003366] to-[#004080]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.reminders ? 'left-7' : 'left-1'}`}></div>
+                    <button onClick={() => handleToggle('notifications', 'alerts')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.alerts ? 'bg-gradient-to-r from-[#003366] to-[#004080]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.alerts ? 'left-7' : 'left-1'}`}></div>
                       </div>
                     </button>
                   </div>
@@ -224,12 +217,12 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
               </div>
 
               <div className={`${darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'} border rounded-xl p-6`}>
-                <h4 className={`text-lg font-semibold ${darkMode ? 'text-blue-300' : 'text-blue-800'} mb-3`}>Lagos State Alerts</h4>
+                <h4 className={`text-lg font-semibold ${darkMode ? 'text-blue-300' : 'text-blue-800'} mb-3`}>Lagos Zone Alerts</h4>
                 <p className={`${darkMode ? 'text-blue-400' : 'text-blue-700'} mb-4`}>
-                  Get notified about Lagos State specific events, CDS meetings, and state announcements
+                  Get notified about Lagos zone events, LGI activities, and important announcements
                 </p>
                 <button className={`px-6 py-2 rounded-lg font-medium ${darkMode ? 'bg-blue-800/30 text-blue-300 hover:bg-blue-800/50' : 'bg-blue-100 text-blue-800 hover:bg-blue-200'}`}>
-                  Configure Lagos Alerts
+                  Configure Zone Alerts
                 </button>
               </div>
             </div>
@@ -246,7 +239,7 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
                       Profile Visibility
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {['public', 'private', 'lagos-admin'].map(visibility => (
+                      {['zonal-only', 'lagos-admin', 'public'].map(visibility => (
                         <button
                           key={visibility}
                           onClick={() => handleSelectChange('privacy', 'profileVisibility', visibility)}
@@ -257,12 +250,14 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
                           }`}
                         >
                           <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>
-                            {visibility === 'lagos-admin' ? 'Lagos Admins Only' : visibility}
+                            {visibility === 'zonal-only' ? 'Zone Only' : 
+                             visibility === 'lagos-admin' ? 'Lagos Admins' : 
+                             'Public'}
                           </div>
                           <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {visibility === 'public' && 'Visible to all Lagos users'}
-                            {visibility === 'private' && 'Only you can see'}
-                            {visibility === 'lagos-admin' && 'Visible to Lagos State admins'}
+                            {visibility === 'zonal-only' && 'Visible to zone only'}
+                            {visibility === 'lagos-admin' && 'Visible to Lagos admins'}
+                            {visibility === 'public' && 'Visible to all users'}
                           </div>
                         </button>
                       ))}
@@ -272,20 +267,8 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show Attendance to Lagos CDS</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Allow Lagos CDS members to view your attendance</div>
-                      </div>
-                      <button onClick={() => handleToggle('privacy', 'showAttendance')} className="relative">
-                        <div className={`w-12 h-6 rounded-full transition ${settings.privacy.showAttendance ? 'bg-gradient-to-r from-[#003366] to-[#004080]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                          <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.privacy.showAttendance ? 'left-7' : 'left-1'}`}></div>
-                        </div>
-                      </button>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show Contact to Lagos CDS</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Display contact to Lagos CDS group members</div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show Contact to LGIs</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Allow LGIs to contact you</div>
                       </div>
                       <button onClick={() => handleToggle('privacy', 'showContact')} className="relative">
                         <div className={`w-12 h-6 rounded-full transition ${settings.privacy.showContact ? 'bg-gradient-to-r from-[#003366] to-[#004080]' : 'bg-gray-300 dark:bg-gray-600'}`}>
@@ -298,127 +281,89 @@ export default function SettingsManagement({ adminData, onUpdateProfile, darkMod
               </div>
 
               <div className={`${darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'} border rounded-xl p-6`}>
-                <h4 className={`text-lg font-semibold ${darkMode ? 'text-blue-300' : 'text-blue-800'} mb-3`}>Lagos State Data Privacy</h4>
+                <h4 className={`text-lg font-semibold ${darkMode ? 'text-blue-300' : 'text-blue-800'} mb-3`}>Lagos Zone Data Privacy</h4>
                 <p className={`${darkMode ? 'text-blue-400' : 'text-blue-700'} mb-4`}>
-                  Your Lagos State administrative data is protected. You can request Lagos State specific data reports.
+                  Your Lagos zone data is protected under Lagos State privacy regulations
                 </p>
                 <div className="flex space-x-4">
                   <button className={`px-6 py-2 rounded-lg font-medium ${darkMode ? 'bg-blue-800/30 text-blue-300 hover:bg-blue-800/50' : 'bg-blue-100 text-blue-800 hover:bg-blue-200'}`}>
-                    Download Lagos Data
+                    Data Settings
                   </button>
                   <button className={`px-6 py-2 border rounded-lg font-medium ${darkMode ? 'border-blue-700 text-blue-400 hover:bg-blue-800/30' : 'border-blue-300 text-blue-700 hover:bg-blue-50'}`}>
-                    Lagos Privacy Policy
+                    Privacy Policy
                   </button>
                 </div>
               </div>
             </div>
           )}
 
-          {activeTab === 'security' && (
+          {activeTab === 'zone-settings' && (
             <div className="space-y-6">
-              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Security Settings</h3>
-              
-              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Two-Factor Authentication</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Add Lagos State security layer</div>
-                    </div>
-                    <button onClick={() => handleToggle('security', 'twoFactor')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.security.twoFactor ? 'bg-gradient-to-r from-[#003366] to-[#004080]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.security.twoFactor ? 'left-7' : 'left-1'}`}></div>
-                      </div>
-                    </button>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Lagos Login Alerts</div>
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify Lagos State admin sign-ins</div>
-                    </div>
-                    <button onClick={() => handleToggle('security', 'loginAlerts')} className="relative">
-                      <div className={`w-12 h-6 rounded-full transition ${settings.security.loginAlerts ? 'bg-gradient-to-r from-[#003366] to-[#004080]' : 'bg-gray-300 dark:bg-gray-600'}`}>
-                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.security.loginAlerts ? 'left-7' : 'left-1'}`}></div>
-                      </div>
-                    </button>
-                  </div>
-
-                  <div>
-                    <h4 className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'} mb-3`}>Change Password</h4>
-                    <button className="px-6 py-3 bg-gradient-to-r from-[#003366] to-[#004080] text-white rounded-lg hover:opacity-90 font-medium">
-                      Update Lagos Admin Password
-                    </button>
-                  </div>
-
-                  <div>
-                    <h4 className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'} mb-3`}>Lagos Admin Sessions</h4>
-                    <div className="space-y-3">
-                      <div className={`flex items-center justify-between p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                        <div>
-                          <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Current Session</div>
-                          <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Chrome • Lagos State HQ</div>
-                        </div>
-                        <button className={`text-sm font-medium ${darkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-800'}`}>
-                          Log Out
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'account' && (
-            <div className="space-y-6">
-              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Lagos State Account</h3>
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Zone Settings</h3>
               
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
                 <div className="space-y-6">
                   <div>
-                    <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Lagos Account Information</h4>
+                    <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Lagos Zone Information</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Account Status</div>
-                        <div className="text-green-600 font-semibold">Active - Lagos State</div>
-                      </div>
-                      <div>
-                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Member Since</div>
-                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>January 2024</div>
-                      </div>
-                      <div>
-                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Account Type</div>
-                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Lagos State Super Admin</div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Zone Name</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{zonalData?.zone}</div>
                       </div>
                       <div>
                         <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Jurisdiction</div>
-                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Lagos State - All LGAs</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{zonalData?.jurisdiction}</div>
+                      </div>
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Zone Status</div>
+                        <div className="text-green-600 font-semibold">Active</div>
+                      </div>
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Total States</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{zonalData?.states?.length || 6} States</div>
                       </div>
                     </div>
                   </div>
 
                   <div className="border-t pt-6">
-                    <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Lagos Account Actions</h4>
+                    <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Zone Management Tools</h4>
                     <div className="space-y-4">
-                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-yellow-400' : 'border-gray-300 hover:bg-gray-50 text-yellow-600'}`}>
-                        <div className="font-medium">Upgrade Lagos Access</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Access premium Lagos State features</div>
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-green-400' : 'border-gray-300 hover:bg-gray-50 text-green-600'}`}>
+                        <div className="font-medium">Update Zone Information</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Edit Lagos zone details</div>
                       </button>
                       <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-blue-400' : 'border-gray-300 hover:bg-gray-50 text-blue-600'}`}>
-                        <div className="font-medium">Export Lagos Data</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Download Lagos State specific data</div>
+                        <div className="font-medium">Manage Zone States</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Configure Lagos states in zone</div>
                       </button>
-                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-orange-400' : 'border-gray-300 hover:bg-gray-50 text-orange-600'}`}>
-                        <div className="font-medium">Transfer Lagos Admin</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Transfer to another Lagos admin</div>
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-yellow-400' : 'border-gray-300 hover:bg-gray-50 text-yellow-600'}`}>
+                        <div className="font-medium">Configure Zone Reports</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Set up Lagos zone reporting</div>
                       </button>
-                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-red-700 hover:bg-red-900/20 text-red-400' : 'border-red-300 hover:bg-red-50 text-red-600'}`}>
-                        <div className="font-medium">Deactivate Lagos Account</div>
-                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Temporarily disable Lagos access</div>
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-purple-400' : 'border-gray-300 hover:bg-gray-50 text-purple-600'}`}>
+                        <div className="font-medium">Zone Clearance Settings</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Configure clearance approval rules</div>
                       </button>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div className={`${darkMode ? 'bg-gradient-to-r from-blue-900/20 to-indigo-900/20 border-blue-800' : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'} border rounded-xl p-6`}>
+                <h4 className={`text-lg font-semibold ${darkMode ? 'text-blue-300' : 'text-blue-800'} mb-3`}>Lagos Zonal Inspector Tools</h4>
+                <p className={`${darkMode ? 'text-blue-400' : 'text-blue-700'} mb-4`}>
+                  Special administrative tools for Lagos Zonal Inspectors
+                </p>
+                <div className="flex space-x-4">
+                  <button className={`px-6 py-2 rounded-lg font-medium ${darkMode ? 'bg-blue-800/30 text-blue-300 hover:bg-blue-800/50' : 'bg-blue-100 text-blue-800 hover:bg-blue-200'}`}>
+                    Generate Zone Report
+                  </button>
+                  <button className={`px-6 py-2 border rounded-lg font-medium ${darkMode ? 'border-blue-700 text-blue-400 hover:bg-blue-800/30' : 'border-blue-300 text-blue-700 hover:bg-blue-50'}`}>
+                    Zone Analytics
+                  </button>
+                  <button className={`px-6 py-2 border rounded-lg font-medium ${darkMode ? 'border-green-700 text-green-400 hover:bg-green-800/30' : 'border-green-300 text-green-700 hover:bg-green-50'}`}>
+                    Export Zone Data
+                  </button>
                 </div>
               </div>
             </div>

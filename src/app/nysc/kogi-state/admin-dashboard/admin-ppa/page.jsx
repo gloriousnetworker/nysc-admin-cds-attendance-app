@@ -15,17 +15,16 @@ export default function PPADashboardPage() {
   useEffect(() => {
     const checkAuth = () => {
       const mockPpaData = {
-        ppaId: 'PPA-001',
-        fullName: 'Mr. Johnson Ade',
-        email: 'johnson@techsolutions.ng',
-        role: 'PPA Owner',
-        organization: 'Tech Solutions Ltd',
+        ppaId: 'KOG-PPA-001',
+        fullName: 'Mr. Kogi PPA Owner',
+        email: 'ppa.kogi@nysc.gov.ng',
+        role: 'Kogi State PPA Owner',
+        organization: 'Kogi State Solutions Ltd',
         organizationType: 'Technology',
-        state: 'Lagos',
-        localGovernment: 'Ikeja',
-        address: '123 Tech Street, Ikeja, Lagos',
+        state: 'Kogi State',
+        localGovernment: 'Lokoja',
+        address: '123 Confluence Street, Lokoja, Kogi',
         phone: '08012345678',
-        email: 'contact@techsolutions.ng',
         verified: true,
         rating: '4.8',
         permissions: ['manage_corpers', 'mark_attendance', 'generate_reports'],
@@ -36,7 +35,7 @@ export default function PPADashboardPage() {
       const storedPpa = localStorage.getItem('nysc_ppa_user');
 
       if (!token || !storedPpa) {
-        localStorage.setItem('nysc_ppa_token', 'demo_ppa_token_' + Date.now());
+        localStorage.setItem('nysc_ppa_token', 'kogi_ppa_token_' + Date.now());
         localStorage.setItem('nysc_ppa_user', JSON.stringify(mockPpaData));
         setPpaData(mockPpaData);
       } else {
@@ -49,7 +48,7 @@ export default function PPADashboardPage() {
         }
       }
 
-      const savedDarkMode = localStorage.getItem('nysc_dark_mode');
+      const savedDarkMode = localStorage.getItem('nysc_user_dark_mode');
       if (savedDarkMode === 'true') {
         setDarkMode(true);
         document.documentElement.classList.add('dark');
@@ -71,7 +70,7 @@ export default function PPADashboardPage() {
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
-    localStorage.setItem('nysc_dark_mode', newDarkMode.toString());
+    localStorage.setItem('nysc_user_dark_mode', newDarkMode.toString());
     
     if (newDarkMode) {
       document.documentElement.classList.add('dark');
@@ -83,7 +82,7 @@ export default function PPADashboardPage() {
   const handleLogout = () => {
     localStorage.removeItem('nysc_ppa_token');
     localStorage.removeItem('nysc_ppa_user');
-    localStorage.removeItem('nysc_dark_mode');
+    localStorage.removeItem('nysc_user_dark_mode');
     router.push('/login');
   };
 
@@ -96,8 +95,8 @@ export default function PPADashboardPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
         <div className="text-center">
-          <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#008753] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading PPA Dashboard...</p>
+          <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#006600] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading Kogi PPA Dashboard...</p>
         </div>
       </div>
     );
@@ -128,6 +127,7 @@ export default function PPADashboardPage() {
               ppaData={ppaData}
               onUpdateProfile={handleUpdateProfile}
               darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
             />
           </main>
         </div>

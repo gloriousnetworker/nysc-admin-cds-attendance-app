@@ -1,264 +1,452 @@
 'use client';
 import { useState } from 'react';
 
-export default function PPACorpers({ ppaData, darkMode }) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterDepartment, setFilterDepartment] = useState('all');
-  const [selectedCorper, setSelectedCorper] = useState(null);
-
-  const corpers = [
-    { id: 1, name: 'John Doe', stateCode: 'NYSC/ABJ/2024/001', department: 'Software Development', supervisor: 'Mr. Johnson', performance: '4.9', status: 'active', joinDate: 'Jan 15, 2024' },
-    { id: 2, name: 'Sarah Smith', stateCode: 'NYSC/ABJ/2024/002', department: 'Quality Assurance', supervisor: 'Mrs. Adeola', performance: '4.8', status: 'active', joinDate: 'Jan 15, 2024' },
-    { id: 3, name: 'Michael Brown', stateCode: 'NYSC/ABJ/2024/003', department: 'DevOps', supervisor: 'Mr. Chinedu', performance: '4.7', status: 'active', joinDate: 'Feb 1, 2024' },
-    { id: 4, name: 'Emily Davis', stateCode: 'NYSC/ABJ/2024/004', department: 'UI/UX Design', supervisor: 'Ms. Fatima', performance: '4.6', status: 'active', joinDate: 'Feb 1, 2024' },
-    { id: 5, name: 'Robert Wilson', stateCode: 'NYSC/ABJ/2024/005', department: 'Marketing', supervisor: 'Mr. Segun', performance: '4.5', status: 'warning', joinDate: 'Mar 1, 2024' },
-    { id: 6, name: 'Lisa Anderson', stateCode: 'NYSC/ABJ/2024/006', department: 'Human Resources', supervisor: 'Mrs. Bola', performance: '4.2', status: 'active', joinDate: 'Mar 1, 2024' },
-    { id: 7, name: 'David Miller', stateCode: 'NYSC/ABJ/2024/007', department: 'Software Development', supervisor: 'Mr. Johnson', performance: '4.9', status: 'active', joinDate: 'Jan 15, 2024' },
-    { id: 8, name: 'Jennifer Lee', stateCode: 'NYSC/ABJ/2024/008', department: 'Data Analysis', supervisor: 'Mr. Ahmed', performance: '4.8', status: 'active', joinDate: 'Feb 1, 2024' }
-  ];
-
-  const departments = ['all', 'Software Development', 'Quality Assurance', 'DevOps', 'UI/UX Design', 'Marketing', 'Human Resources', 'Data Analysis'];
-
-  const filteredCorpers = corpers.filter(corper => {
-    const matchesSearch = corper.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         corper.stateCode.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesDept = filterDepartment === 'all' || corper.department === filterDepartment;
-    return matchesSearch && matchesDept;
+export default function PPASettings({ ppaData, onUpdateProfile, darkMode, toggleDarkMode }) {
+  const [activeTab, setActiveTab] = useState('general');
+  const [settings, setSettings] = useState({
+    notifications: {
+      email: true,
+      sms: false,
+      push: true,
+      attendanceAlerts: true,
+      corperUpdates: true
+    },
+    privacy: {
+      profileVisibility: 'public',
+      showRatings: true,
+      showContact: false,
+      showLocation: true
+    },
+    security: {
+      twoFactor: false,
+      loginAlerts: true
+    },
+    preferences: {
+      language: 'en',
+      timezone: 'WAT'
+    }
   });
 
-  const handleAssignTask = (corper) => {
-    alert(`Assign task to: ${corper.name}`);
+  const handleToggle = (category, key) => {
+    setSettings(prev => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        [key]: !prev[category][key]
+      }
+    }));
   };
 
-  const handleViewDetails = (corper) => {
-    setSelectedCorper(corper);
-  };
-
-  const handleEvaluate = (corper) => {
-    alert(`Evaluate: ${corper.name}`);
+  const handleSelectChange = (category, key, value) => {
+    setSettings(prev => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        [key]: value
+      }
+    }));
   };
 
   return (
-    <div className={`rounded-xl ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'} transition-colors duration-300`}>
-      <div className="p-5 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">My Corpers</h3>
-          
-          <div className="flex flex-col md:flex-row gap-3">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search corpers..."
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#008753] transition-colors duration-300"
-            />
-            
-            <select
-              value={filterDepartment}
-              onChange={(e) => setFilterDepartment(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#008753] transition-colors duration-300"
-            >
-              {departments.map(dept => (
-                <option key={dept} value={dept} className="dark:bg-gray-800">
-                  {dept === 'all' ? 'All Departments' : dept}
-                </option>
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="lg:col-span-1">
+          <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6 sticky top-6`}>
+            <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Settings</h3>
+            <div className="space-y-2">
+              {['general', 'notifications', 'privacy', 'security', 'account'].map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`w-full text-left p-3 rounded-lg transition ${
+                    activeTab === tab
+                      ? 'bg-gradient-to-r from-[#006600] to-[#008800] text-white'
+                      : `${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`
+                  }`}
+                >
+                  <span className="capitalize">{tab} Settings</span>
+                </button>
               ))}
-            </select>
-            
-            <button
-              className="bg-[#008753] text-white px-4 py-2 rounded-lg hover:bg-[#006b42] transition-colors duration-300 font-medium"
-            >
-              + Request New Corper
-            </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className={darkMode ? 'bg-gray-700' : 'bg-gray-50'}>
-            <tr>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Corper Details</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">State Code</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Department</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Supervisor</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Performance</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Status</th>
-              <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold text-sm">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {filteredCorpers.map(corper => (
-              <tr key={corper.id} className={darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} style={{transition: 'background-color 0.3s ease'}}>
-                <td className="py-4 px-4">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
-                      {corper.name.charAt(0)}
-                    </div>
+        <div className="lg:col-span-3">
+          {activeTab === 'general' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>General Settings</h3>
+              
+              <div className="space-y-6">
+                <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                  <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>PPA Preferences</h4>
+                  <div className="space-y-4">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-white text-sm">{corper.name}</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">Joined: {corper.joinDate}</div>
+                      <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                        Display Theme
+                      </label>
+                      <div className="flex space-x-4">
+                        <button
+                          onClick={() => toggleDarkMode(false)}
+                          className={`p-4 border-2 rounded-lg ${!darkMode ? 'border-[#006600] bg-green-50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600'}`}
+                        >
+                          <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Light Mode</div>
+                          <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Default theme</div>
+                        </button>
+                        <button
+                          onClick={() => toggleDarkMode(true)}
+                          className={`p-4 border-2 rounded-lg ${darkMode ? 'border-[#006600] bg-green-50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600'}`}
+                        >
+                          <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Dark Mode</div>
+                          <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Reduced eye strain</div>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                        Language Preference
+                      </label>
+                      <select
+                        value={settings.preferences.language}
+                        onChange={(e) => handleSelectChange('preferences', 'language', e.target.value)}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#006600] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
+                      >
+                        <option value="en">English</option>
+                        <option value="ha">Hausa</option>
+                        <option value="yo">Yoruba</option>
+                        <option value="ig">Igbo</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                        Time Zone
+                      </label>
+                      <select
+                        value={settings.preferences.timezone}
+                        onChange={(e) => handleSelectChange('preferences', 'timezone', e.target.value)}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#006600] focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
+                      >
+                        <option value="WAT">West Africa Time (WAT)</option>
+                        <option value="GMT">Greenwich Mean Time (GMT)</option>
+                        <option value="EST">Eastern Standard Time (EST)</option>
+                      </select>
                     </div>
                   </div>
-                </td>
-                <td className="py-4 px-4">
-                  <span className="font-mono text-sm text-gray-900 dark:text-gray-300">{corper.stateCode}</span>
-                </td>
-                <td className="py-4 px-4">
-                  <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-xs">
-                    {corper.department}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <div className="text-sm text-gray-900 dark:text-gray-300">{corper.supervisor}</div>
-                </td>
-                <td className="py-4 px-4">
-                  <div className="flex items-center">
-                    <div className="flex text-yellow-400 mr-1">
-                      {'★'.repeat(Math.floor(corper.performance))}
-                      {'☆'.repeat(5 - Math.floor(corper.performance))}
+                </div>
+
+                <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                  <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>PPA Display</h4>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show PPA Badge</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Display PPA branding</div>
+                      </div>
+                      <button className="relative">
+                        <div className={`w-12 h-6 rounded-full transition bg-gradient-to-r from-[#006600] to-[#008800]`}>
+                          <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform left-7`}></div>
+                        </div>
+                      </button>
                     </div>
-                    <span className="text-xs font-medium text-gray-900 dark:text-gray-300 ml-1">
-                      {corper.performance}
-                    </span>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Kogi State View</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Show Kogi State specific features</div>
+                      </div>
+                      <button className="relative">
+                        <div className={`w-12 h-6 rounded-full ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}>
+                          <div className={`absolute top-1 left-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'}`}></div>
+                        </div>
+                      </button>
+                    </div>
                   </div>
-                </td>
-                <td className="py-4 px-4">
-                  <span className={`px-3 py-1 rounded-full text-xs ${
-                    corper.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
-                    corper.status === 'warning' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
-                    'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
-                  }`}>
-                    {corper.status}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleViewDetails(corper)}
-                      className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800/50 text-xs transition-colors duration-300"
-                    >
-                      View
-                    </button>
-                    <button
-                      onClick={() => handleAssignTask(corper)}
-                      className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-200 dark:hover:bg-green-800/50 text-xs transition-colors duration-300"
-                    >
-                      Assign Task
-                    </button>
-                    <button
-                      onClick={() => handleEvaluate(corper)}
-                      className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800/50 text-xs transition-colors duration-300"
-                    >
-                      Evaluate
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'notifications' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Notification Settings</h3>
+              
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Email Notifications</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Receive updates via email</div>
+                    </div>
+                    <button onClick={() => handleToggle('notifications', 'email')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.email ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.email ? 'left-7' : 'left-1'}`}></div>
+                      </div>
                     </button>
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
-      <div className="p-5 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Showing {filteredCorpers.length} of {corpers.length} corpers in {ppaData?.organization}
-          </div>
-          <div className="flex space-x-2">
-            <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm transition-colors duration-300">
-              Previous
-            </button>
-            <button className="px-3 py-1 bg-[#008753] text-white rounded-lg text-sm">1</button>
-            <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm transition-colors duration-300">
-              2
-            </button>
-            <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm transition-colors duration-300">
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>SMS Notifications</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Receive text message alerts</div>
+                    </div>
+                    <button onClick={() => handleToggle('notifications', 'sms')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.sms ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.sms ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
 
-      {selectedCorper && (
-        <div className={`p-5 border-t border-gray-200 dark:border-gray-700 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} transition-colors duration-300`}>
-          <div className="flex justify-between items-start mb-4">
-            <h4 className="font-semibold text-gray-900 dark:text-white">Corper Details</h4>
-            <button
-              onClick={() => setSelectedCorper(null)}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-            >
-              ✕
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Full Name</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedCorper.name}</div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Push Notifications</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Browser and app notifications</div>
+                    </div>
+                    <button onClick={() => handleToggle('notifications', 'push')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.push ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.push ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Attendance Alerts</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Kogi corper attendance reminders</div>
+                    </div>
+                    <button onClick={() => handleToggle('notifications', 'attendanceAlerts')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.attendanceAlerts ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.attendanceAlerts ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Corper Updates</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Kogi corper assignment updates</div>
+                    </div>
+                    <button onClick={() => handleToggle('notifications', 'corperUpdates')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.notifications.corperUpdates ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.notifications.corperUpdates ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">State Code</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedCorper.stateCode}</div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Department</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedCorper.department}</div>
+
+              <div className={`${darkMode ? 'bg-green-900/20 border-green-800' : 'bg-green-50 border-green-200'} border rounded-xl p-6`}>
+                <h4 className={`text-lg font-semibold ${darkMode ? 'text-green-300' : 'text-green-800'} mb-3`}>Kogi PPA Alerts</h4>
+                <p className={`${darkMode ? 'text-green-400' : 'text-green-700'} mb-4`}>
+                  Get notified about Kogi State PPA events, inspections, and announcements
+                </p>
+                <button className={`px-6 py-2 rounded-lg font-medium ${darkMode ? 'bg-green-800/30 text-green-300 hover:bg-green-800/50' : 'bg-green-100 text-green-800 hover:bg-green-200'}`}>
+                  Configure PPA Alerts
+                </button>
               </div>
             </div>
-            
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Supervisor</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedCorper.supervisor}</div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Performance</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedCorper.performance}/5.0</div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Join Date</label>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedCorper.joinDate}</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex space-x-3">
-              <button className="px-4 py-2 bg-[#008753] text-white rounded-lg hover:bg-[#006b42] transition-colors duration-300 text-sm font-medium">
-                View Full Profile
-              </button>
-              <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium transition-colors duration-300">
-                View Attendance
-              </button>
-              <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium transition-colors duration-300">
-                Performance Report
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      <div className={`p-5 border-t border-gray-200 dark:border-gray-700 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} transition-colors duration-300`}>
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Organization Summary</h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-3 rounded-lg bg-white dark:bg-gray-800">
-            <div className="text-lg font-bold text-[#008753] dark:text-green-400">8</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Total Corpers</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-white dark:bg-gray-800">
-            <div className="text-lg font-bold text-green-600 dark:text-green-400">4.8</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Avg. Performance</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-white dark:bg-gray-800">
-            <div className="text-lg font-bold text-blue-600 dark:text-blue-400">7</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Departments</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-white dark:bg-gray-800">
-            <div className="text-lg font-bold text-yellow-600 dark:text-yellow-400">87%</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Avg. Attendance</div>
-          </div>
+          {activeTab === 'privacy' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Privacy Settings</h3>
+              
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                <div className="space-y-6">
+                  <div>
+                    <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-3`}>
+                      Profile Visibility
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {['public', 'private', 'kogi-only'].map(visibility => (
+                        <button
+                          key={visibility}
+                          onClick={() => handleSelectChange('privacy', 'profileVisibility', visibility)}
+                          className={`p-4 border-2 rounded-lg text-center capitalize ${
+                            settings.privacy.profileVisibility === visibility
+                              ? 'border-[#006600] bg-green-50 dark:bg-green-900/20'
+                              : `${darkMode ? 'border-gray-600 hover:border-gray-500' : 'border-gray-300 hover:border-gray-400'}`
+                          }`}
+                        >
+                          <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>
+                            {visibility === 'kogi-only' ? 'Kogi Only' : visibility}
+                          </div>
+                          <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            {visibility === 'public' && 'Visible to all Kogi users'}
+                            {visibility === 'private' && 'Only you can see'}
+                            {visibility === 'kogi-only' && 'Visible to Kogi State admins only'}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show PPA Ratings</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Display organization ratings to Kogi corpers</div>
+                      </div>
+                      <button onClick={() => handleToggle('privacy', 'showRatings')} className="relative">
+                        <div className={`w-12 h-6 rounded-full transition ${settings.privacy.showRatings ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                          <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.privacy.showRatings ? 'left-7' : 'left-1'}`}></div>
+                        </div>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show Contact Details</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Display contact to assigned Kogi corpers</div>
+                      </div>
+                      <button onClick={() => handleToggle('privacy', 'showContact')} className="relative">
+                        <div className={`w-12 h-6 rounded-full transition ${settings.privacy.showContact ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                          <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.privacy.showContact ? 'left-7' : 'left-1'}`}></div>
+                        </div>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Show PPA Location</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Display organization location on Kogi map</div>
+                      </div>
+                      <button onClick={() => handleToggle('privacy', 'showLocation')} className="relative">
+                        <div className={`w-12 h-6 rounded-full transition ${settings.privacy.showLocation ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                          <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.privacy.showLocation ? 'left-7' : 'left-1'}`}></div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={`${darkMode ? 'bg-green-900/20 border-green-800' : 'bg-green-50 border-green-200'} border rounded-xl p-6`}>
+                <h4 className={`text-lg font-semibold ${darkMode ? 'text-green-300' : 'text-green-800'} mb-3`}>Kogi PPA Data Privacy</h4>
+                <p className={`${darkMode ? 'text-green-400' : 'text-green-700'} mb-4`}>
+                  Your Kogi PPA organization data is protected. You can request PPA specific data reports.
+                </p>
+                <div className="flex space-x-4">
+                  <button className={`px-6 py-2 rounded-lg font-medium ${darkMode ? 'bg-green-800/30 text-green-300 hover:bg-green-800/50' : 'bg-green-100 text-green-800 hover:bg-green-200'}`}>
+                    Download PPA Data
+                  </button>
+                  <button className={`px-6 py-2 border rounded-lg font-medium ${darkMode ? 'border-green-700 text-green-400 hover:bg-green-800/30' : 'border-green-300 text-green-700 hover:bg-green-50'}`}>
+                    Kogi PPA Privacy Policy
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'security' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Security Settings</h3>
+              
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Two-Factor Authentication</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Add Kogi PPA security layer</div>
+                    </div>
+                    <button onClick={() => handleToggle('security', 'twoFactor')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.security.twoFactor ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.security.twoFactor ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>PPA Login Alerts</div>
+                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Notify Kogi PPA account sign-ins</div>
+                    </div>
+                    <button onClick={() => handleToggle('security', 'loginAlerts')} className="relative">
+                      <div className={`w-12 h-6 rounded-full transition ${settings.security.loginAlerts ? 'bg-gradient-to-r from-[#006600] to-[#008800]' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-transform ${settings.security.loginAlerts ? 'left-7' : 'left-1'}`}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div>
+                    <h4 className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'} mb-3`}>Change Password</h4>
+                    <button className="px-6 py-3 bg-gradient-to-r from-[#006600] to-[#008800] text-white rounded-lg hover:opacity-90 font-medium">
+                      Update PPA Password
+                    </button>
+                  </div>
+
+                  <div>
+                    <h4 className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'} mb-3`}>PPA Sessions</h4>
+                    <div className="space-y-3">
+                      <div className={`flex items-center justify-between p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                        <div>
+                          <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Current Session</div>
+                          <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Chrome • {ppaData?.organization} Office</div>
+                        </div>
+                        <button className={`text-sm font-medium ${darkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-800'}`}>
+                          Log Out
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'account' && (
+            <div className="space-y-6">
+              <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>PPA Account</h3>
+              
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
+                <div className="space-y-6">
+                  <div>
+                    <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Kogi PPA Account Information</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Account Status</div>
+                        <div className="text-green-600 font-semibold">Active - Kogi Verified PPA</div>
+                      </div>
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Member Since</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>March 2024</div>
+                      </div>
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Account Type</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Kogi State PPA Owner</div>
+                      </div>
+                      <div>
+                        <div className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>Organization Type</div>
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{ppaData?.organizationType}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-6">
+                    <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Kogi PPA Account Actions</h4>
+                    <div className="space-y-4">
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-orange-400' : 'border-gray-300 hover:bg-gray-50 text-orange-600'}`}>
+                        <div className="font-medium">Upgrade PPA Access</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Access premium Kogi PPA features</div>
+                      </button>
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-green-400' : 'border-gray-300 hover:bg-gray-50 text-green-600'}`}>
+                        <div className="font-medium">Export PPA Data</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Download Kogi PPA specific data</div>
+                      </button>
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-gray-600 hover:bg-gray-700 text-blue-400' : 'border-gray-300 hover:bg-gray-50 text-blue-600'}`}>
+                        <div className="font-medium">Transfer PPA Ownership</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Transfer to another Kogi PPA owner</div>
+                      </button>
+                      <button className={`w-full text-left p-4 border rounded-lg ${darkMode ? 'border-red-700 hover:bg-red-900/20 text-red-400' : 'border-red-300 hover:bg-red-50 text-red-600'}`}>
+                        <div className="font-medium">Deactivate PPA Account</div>
+                        <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Temporarily disable PPA access</div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

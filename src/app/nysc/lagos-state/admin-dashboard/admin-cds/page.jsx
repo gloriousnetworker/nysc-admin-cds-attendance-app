@@ -15,7 +15,7 @@ export default function CDSDashboardPage() {
   useEffect(() => {
     const checkAuth = () => {
       const mockCdsData = {
-        cdsId: 'CDS-001',
+        cdsId: 'LAG-CDS-001',
         fullName: 'Sarah Johnson',
         email: 'sarah.johnson@nysc.gov.ng',
         role: 'CDS Coordinator',
@@ -30,7 +30,7 @@ export default function CDSDashboardPage() {
       const storedCds = localStorage.getItem('nysc_cds_user');
 
       if (!token || !storedCds) {
-        localStorage.setItem('nysc_cds_token', 'demo_cds_token_' + Date.now());
+        localStorage.setItem('nysc_cds_token', 'lagos_cds_token_' + Date.now());
         localStorage.setItem('nysc_cds_user', JSON.stringify(mockCdsData));
         setCdsData(mockCdsData);
       } else {
@@ -43,7 +43,7 @@ export default function CDSDashboardPage() {
         }
       }
 
-      const savedDarkMode = localStorage.getItem('nysc_dark_mode');
+      const savedDarkMode = localStorage.getItem('nysc_user_dark_mode');
       if (savedDarkMode === 'true') {
         setDarkMode(true);
         document.documentElement.classList.add('dark');
@@ -65,7 +65,7 @@ export default function CDSDashboardPage() {
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
-    localStorage.setItem('nysc_dark_mode', newDarkMode.toString());
+    localStorage.setItem('nysc_user_dark_mode', newDarkMode.toString());
     
     if (newDarkMode) {
       document.documentElement.classList.add('dark');
@@ -77,7 +77,7 @@ export default function CDSDashboardPage() {
   const handleLogout = () => {
     localStorage.removeItem('nysc_cds_token');
     localStorage.removeItem('nysc_cds_user');
-    localStorage.removeItem('nysc_dark_mode');
+    localStorage.removeItem('nysc_user_dark_mode');
     router.push('/login');
   };
 
@@ -90,8 +90,8 @@ export default function CDSDashboardPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
         <div className="text-center">
-          <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#008753] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading CDS Dashboard...</p>
+          <div className="h-12 w-12 border-4 border-t-4 border-gray-300 border-t-[#003366] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading Lagos CDS Dashboard...</p>
         </div>
       </div>
     );
@@ -122,6 +122,7 @@ export default function CDSDashboardPage() {
               cdsData={cdsData}
               onUpdateProfile={handleUpdateProfile}
               darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
             />
           </main>
         </div>
